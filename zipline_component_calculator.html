@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zipline Drone Build & Component Calculator</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f7f8fb; color: #17202a; }
+.container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+.header { background: #fff; border: 1px solid #e7ebf0; border-radius: 16px; padding: 20px 22px; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(20,30,50,.05); }
+.header-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.title { font-size: 24px; font-weight: 700; }
+.subtitle { color: #5f6b7a; font-size: 14px; line-height: 1.5; margin-top: 8px; }
+.badge { background: #e9f2ff; color: #175cd3; border-radius: 999px; padding: 6px 10px; font-size: 12px; font-weight: 600; }
+.grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+.card { background: #fff; border: 1px solid #e7ebf0; border-radius: 16px; padding: 18px; box-shadow: 0 8px 24px rgba(20,30,50,.05); }
+.card h2 { font-size: 16px; margin-bottom: 12px; }
+.card h3 { font-size: 14px; margin-bottom: 10px; }
+.card p { color: #5f6b7a; font-size: 13px; line-height: 1.5; }
+.col-4 { grid-column: span 4; }
+.col-5 { grid-column: span 5; }
+.col-7 { grid-column: span 7; }
+.col-8 { grid-column: span 8; }
+.col-12 { grid-column: span 12; }
+.controls { display: grid; grid-template-columns: repeat(2, minmax(180px, 1fr)); gap: 12px; }
+.field label { display: block; font-size: 12px; color: #5f6b7a; margin-bottom: 6px; font-weight: 600; }
+.field input, .field select { width: 100%; border: 1px solid #d7dde5; border-radius: 10px; padding: 10px 12px; font-size: 14px; background: #fff; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+.stat { background: #f8fafc; border: 1px solid #edf1f5; border-radius: 12px; padding: 12px; }
+.stat .value { font-size: 24px; font-weight: 700; }
+.stat .label { font-size: 12px; color: #5f6b7a; margin-top: 4px; }
+button { border: 0; border-radius: 10px; padding: 10px 12px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.btn-primary { background: #175cd3; color: #fff; }
+.btn-secondary { background: #eef2f6; color: #25313d; }
+.btn-danger { background: #fff1f2; color: #be123c; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.table-wrap { overflow: auto; margin-top: 12px; border: 1px solid #e7ebf0; border-radius: 14px; }
+table { width: 100%; border-collapse: collapse; min-width: 1040px; }
+thead th { position: sticky; top: 0; background: #f8fafc; z-index: 1; text-align: left; font-size: 12px; color: #5f6b7a; padding: 12px 10px; border-bottom: 1px solid #e7ebf0; }
+tbody td { padding: 10px; border-bottom: 1px solid #eef2f6; font-size: 13px; vertical-align: middle; }
+tbody tr:hover { background: #fbfdff; }
+.small { font-size: 12px; color: #5f6b7a; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.qty-input { width: 90px; padding: 8px 10px; border: 1px solid #d7dde5; border-radius: 8px; }
+.qty-required { font-weight: 700; }
+.chip { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.chip.p1 { background: #e8f1ff; color: #175cd3; }
+.chip.p2 { background: #eefbf3; color: #067647; }
+.note { background: #fff9db; border: 1px solid #f6e7a5; color: #6b5300; border-radius: 12px; padding: 12px 14px; font-size: 13px; line-height: 1.5; margin-top: 14px; }
+.footer { color: #5f6b7a; font-size: 12px; margin-top: 12px; line-height: 1.5; }
+@media (max-width: 1100px) { .col-4,.col-5,.col-7,.col-8,.col-12 { grid-column: span 12; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-top">
+      <div class="title">Zipline Drone Build & Component Calculator</div>
+      <div class="badge">Editable defaults + scenario planning</div>
+    </div>
+    <div class="subtitle">
+      Built from your Phase 1 component master list. This tool lets a user choose Platform 1 or Platform 2, enter how many drones to build,
+      override any per-drone component quantity, and reset either one row or the full model back to defaults.
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card col-4">
+      <h2>Build input</h2>
+      <div class="controls">
+        <div class="field">
+          <label>Platform</label>
+          <select id="platformSelect">
+            <option value="P1">Platform 1 (fixed-wing)</option>
+            <option value="P2">Platform 2 (VTOL + Droid)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Drones to build</label>
+          <input id="droneCount" type="number" min="0" step="1" value="25" />
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="value" id="visibleComponents">0</div>
+          <div class="label">Components in platform</div>
+        </div>
+        <div class="stat">
+          <div class="value" id="uniqueUnits">0</div>
+          <div class="label">Units per drone</div>
+        </div>
+        <div class="stat">
+          <div class="value" id="totalUnits">0</div>
+          <div class="label">Total units required</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn-primary" onclick="exportCSV()">Export requirements CSV</button>
+        <button class="btn-secondary" onclick="resetAllToDefaults()">Reset all to defaults</button>
+      </div>
+      <div class="note">
+        Default per-drone quantities are planning assumptions based on the component notes in your file and common drone architecture. They are editable.
+      </div>
+    </div>
+
+    <div class="card col-8">
+      <h2>Public operating proxy for daily drone need</h2>
+      <p>
+        Exact Zipline factory output is not publicly disclosed. So this section gives a scenario estimate using public operating signals, which you can edit.
+      </p>
+      <div class="controls" style="grid-template-columns: repeat(4, minmax(160px, 1fr)); margin-top: 12px;">
+        <div class="field">
+          <label>Deliveries per day</label>
+          <input id="deliveriesPerDay" type="number" min="0" step="1" value="2880" />
+        </div>
+        <div class="field">
+          <label>Deliveries per drone per day</label>
+          <input id="deliveriesPerDrone" type="number" min="0" step="0.1" value="20" />
+        </div>
+        <div class="field">
+          <label>Spare / buffer factor</label>
+          <input id="bufferFactor" type="number" min="1" step="0.01" value="1.15" />
+        </div>
+        <div class="field">
+          <label>Replacement rate per day</label>
+          <input id="replacementRate" type="number" min="0" step="0.001" value="0.01" />
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="value" id="activeFleet">0</div>
+          <div class="label">Estimated active drones needed</div>
+        </div>
+        <div class="stat">
+          <div class="value" id="fleetWithBuffer">0</div>
+          <div class="label">Active fleet with buffer</div>
+        </div>
+        <div class="stat">
+          <div class="value" id="buildPerDay">0</div>
+          <div class="label">Scenario build / replacement per day</div>
+        </div>
+      </div>
+      <div class="note" style="margin-top:12px; line-height:1.7;">
+        <strong>How this number is calculated:</strong><br>
+        1) Active drones needed = Deliveries per day ÷ Deliveries per drone per day.<br>
+        2) Active fleet with buffer = Active drones needed × Spare / buffer factor.<br>
+        3) Scenario build / replacement per day = Active fleet with buffer × Replacement rate per day.
+      </div>
+      <div class="stats" style="margin-top:12px; grid-template-columns: repeat(2, minmax(220px, 1fr));">
+        <div class="stat">
+          <div class="value" id="example144">0</div>
+          <div class="label">Example fleet result using only buffer</div>
+          <div class="small" id="example144Text" style="margin-top:6px;"></div>
+        </div>
+        <div class="stat">
+          <div class="value" id="example166">0</div>
+          <div class="label">Example fleet result using buffer + 15% reserve</div>
+          <div class="small" id="example166Text" style="margin-top:6px;"></div>
+        </div>
+      </div>
+      <div class="footer">
+        Public basis for defaults: Zipline says it safely makes a delivery every 30 seconds somewhere in the world, which is about 2,880 deliveries per day.
+        A Ghana rollout described 600 deliveries per day using 30 drones, implying about 20 deliveries per drone per day in that operating setup.
+        Those numbers support an operations proxy, not a confirmed manufacturing rate.
+      </div>
+    </div>
+
+    <div class="card col-12">
+      <h2>Editable component requirement table</h2>
+      <div class="small">Change any per-drone value, and the required quantity updates instantly. Use the reset button in a row to revert only that component.</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:72px;">ID</th>
+              <th style="width:260px;">Component</th>
+              <th style="width:190px;">Category</th>
+              <th style="width:110px;">Platform</th>
+              <th style="width:140px;">Default / drone</th>
+              <th style="width:140px;">User qty / drone</th>
+              <th style="width:140px;">Required qty</th>
+              <th>Note</th>
+              <th style="width:110px;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="componentBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const components = [
+  {id:'AF-01',name:'Carbon fiber composite fuselage',cat:'Airframe & Structure',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'Primary structural fuselage.'},
+  {id:'AF-02',name:'Polystyrene / EPS outer shell',cat:'Airframe & Structure',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'Outer body shell.'},
+  {id:'AF-03',name:'Fixed wing panel (carbon fiber)',cat:'Airframe & Structure',plat:['P1','P2'],defaults:{P1:2,P2:2},note:'Left and right wing panels.'},
+  {id:'AF-04',name:'Tail assembly (elevator + rudder)',cat:'Airframe & Structure',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'One full tail assembly.'},
+  {id:'AF-05',name:'Servo actuators (control surfaces)',cat:'Airframe & Structure',plat:['P1','P2'],defaults:{P1:4,P2:4},note:'Planning default for aileron/elevator/rudder actuation.'},
+  {id:'AF-06',name:'Pushrods and control linkages',cat:'Airframe & Structure',plat:['P1','P2'],defaults:{P1:4,P2:4},note:'Matched to control surface linkages.'},
+  {id:'AF-07',name:'Droid airframe (P2 only)',cat:'Airframe & Structure',plat:['P2'],defaults:{P1:0,P2:1},note:'One Droid per P2 zip.'},
+  {id:'PR-01',name:'Brushless DC motor (cruise)',cat:'Propulsion',plat:['P1','P2'],defaults:{P1:2,P2:1},note:'P1 notes mention 2 motors for redundancy; P2 cruise default set to 1.'},
+  {id:'PR-02',name:'Electronic Speed Controller (ESC)',cat:'Propulsion',plat:['P1','P2'],defaults:{P1:2,P2:1},note:'One ESC per cruise motor by default.'},
+  {id:'PR-03',name:'Fixed propellers (main)',cat:'Propulsion',plat:['P1','P2'],defaults:{P1:2,P2:1},note:'One main propeller per cruise motor.'},
+  {id:'PR-04',name:'VTOL lift motors (P2 Zip)',cat:'Propulsion',plat:['P2'],defaults:{P1:0,P2:4},note:'Planning assumption for VTOL lift set.'},
+  {id:'PR-05',name:'Droid thruster motors (P2)',cat:'Propulsion',plat:['P2'],defaults:{P1:0,P2:4},note:'Planning assumption for precision hover / positioning.'},
+  {id:'PR-06',name:'Motor mount / frame arms',cat:'Propulsion',plat:['P1','P2'],defaults:{P1:2,P2:5},note:'Aligned to total motor count assumption.'},
+  {id:'PW-01',name:'LiPo / Li-ion main flight battery',cat:'Power & Energy',plat:['P1','P2'],defaults:{P1:2,P2:1},note:'P1 notes mention two interchangeable batteries.'},
+  {id:'PW-02',name:'Battery management system (BMS)',cat:'Power & Energy',plat:['P1','P2'],defaults:{P1:2,P2:1},note:'One per battery pack by default.'},
+  {id:'PW-03',name:'Power distribution board (PDB)',cat:'Power & Energy',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'One board per main aircraft.'},
+  {id:'PW-04',name:'Voltage regulators (BEC)',cat:'Power & Energy',plat:['P1','P2'],defaults:{P1:2,P2:2},note:'Planning default for avionics and servo power.'},
+  {id:'PW-05',name:'Droid battery pack (P2)',cat:'Power & Energy',plat:['P2'],defaults:{P1:0,P2:1},note:'Separate P2 Droid battery.'},
+  {id:'AV-01',name:'Flight controller / autopilot unit',cat:'Avionics & Flight Control',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'Primary controller.'},
+  {id:'AV-02',name:'Inertial Measurement Unit (IMU)',cat:'Avionics & Flight Control',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'One IMU module.'},
+  {id:'AV-03',name:'Barometric pressure sensor',cat:'Avionics & Flight Control',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'Altitude pressure sensing.'},
+  {id:'AV-04',name:'Magnetometer / compass',cat:'Avionics & Flight Control',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'Heading reference.'},
+  {id:'AV-05',name:'Airspeed sensor (pitot tube)',cat:'Avionics & Flight Control',plat:['P1'],defaults:{P1:1,P2:0},note:'P1 only.'},
+  {id:'AV-06',name:'Processor / microcontroller (MCU)',cat:'Avionics & Flight Control',plat:['P1','P2'],defaults:{P1:2,P2:2},note:'Planning assumption for main + supporting compute.'},
+  {id:'NA-01',name:'GNSS / GPS module',cat:'Navigation & Sensing',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'One navigation module.'},
+  {id:'NA-02',name:'Computer vision / optical sensor',cat:'Navigation & Sensing',plat:['P2'],defaults:{P1:0,P2:2},note:'Planning assumption for P2 visual sensing.'},
+  {id:'NA-03',name:'Obstacle avoidance sensor',cat:'Navigation & Sensing',plat:['P1','P2'],defaults:{P1:2,P2:4},note:'Planning assumption for multi-direction coverage.'},
+  {id:'NA-04',name:'Rangefinder / altimeter',cat:'Navigation & Sensing',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'Precision altitude.'},
+  {id:'NA-05',name:'Winch / tether encoder (P2)',cat:'Navigation & Sensing',plat:['P2'],defaults:{P1:0,P2:1},note:'P2 tether measurement.'},
+  {id:'CM-01',name:'LTE / 4G cellular modem',cat:'Communication',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'Primary comms link.'},
+  {id:'CM-02',name:'RF telemetry module',cat:'Communication',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'Redundant telemetry.'},
+  {id:'CM-03',name:'Antenna (LTE + RF)',cat:'Communication',plat:['P1','P2'],defaults:{P1:2,P2:2},note:'Planning assumption for separate antennas.'},
+  {id:'CM-04',name:'ADS-B transponder',cat:'Communication',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'One transponder.'},
+  {id:'PL-01',name:'Payload bay / cargo compartment',cat:'Payload & Delivery',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'One payload bay per craft.'},
+  {id:'PL-02',name:'Parachute release mechanism (P1)',cat:'Payload & Delivery',plat:['P1'],defaults:{P1:1,P2:0},note:'P1 drop mechanism.'},
+  {id:'PL-03',name:'Winch / tether system (P2)',cat:'Payload & Delivery',plat:['P2'],defaults:{P1:0,P2:1},note:'P2 lowering system.'},
+  {id:'PL-04',name:'Thermal insulation liner',cat:'Payload & Delivery',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'One insulation set.'},
+  {id:'SF-01',name:'Emergency parachute system',cat:'Safety & Redundancy',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'One emergency parachute system.'},
+  {id:'SF-02',name:'Redundant flight controller',cat:'Safety & Redundancy',plat:['P1','P2'],defaults:{P1:1,P2:1},note:'Backup controller.'},
+  {id:'SF-03',name:'Kevlar fuselage reinforcement',cat:'Safety & Redundancy',plat:['P1'],defaults:{P1:1,P2:0},note:'P1 reinforcement layer.'},
+  {id:'GS-01',name:'Pneumatic launch rail / catapult',cat:'Ground Support',plat:['P1'],defaults:{P1:0.04,P2:0},note:'Not per aircraft. Default assumes 1 launcher supports 25 P1 drones.'},
+  {id:'GS-02',name:'Battery charging station',cat:'Ground Support',plat:['P1','P2'],defaults:{P1:0.1,P2:0.1},note:'Not per aircraft. Default assumes 1 station supports 10 drones.'},
+  {id:'GS-03',name:'Ground control server / software',cat:'Ground Support',plat:['P1','P2'],defaults:{P1:0.02,P2:0.02},note:'Not per aircraft. Default assumes 1 server stack supports 50 drones.'}
+];
+
+const state = {};
+for (const c of components) {
+  state[c.id] = { P1: c.defaults.P1, P2: c.defaults.P2 };
+}
+
+function currentPlatform() {
+  return document.getElementById('platformSelect').value;
+}
+function currentDroneCount() {
+  return Number(document.getElementById('droneCount').value || 0);
+}
+function visibleComponentsList() {
+  const p = currentPlatform();
+  return components.filter(c => c.plat.includes(p));
+}
+function formatQty(n) {
+  if (Number.isInteger(n)) return String(n);
+  return Number(n).toFixed(2).replace(/\.00$/, '');
+}
+function renderTable() {
+  const p = currentPlatform();
+  const drones = currentDroneCount();
+  const rows = visibleComponentsList();
+  const body = document.getElementById('componentBody');
+  let unitsPerDrone = 0;
+  let totalRequired = 0;
+
+  body.innerHTML = rows.map(c => {
+    const defaultQty = c.defaults[p] || 0;
+    const userQty = Number(state[c.id][p] ?? defaultQty);
+    const requiredQty = userQty * drones;
+    unitsPerDrone += userQty;
+    totalRequired += requiredQty;
+    return `
+      <tr>
+        <td class="mono">${c.id}</td>
+        <td><strong>${c.name}</strong></td>
+        <td>${c.cat}</td>
+        <td><span class="chip ${p.toLowerCase()}">${p}</span></td>
+        <td class="mono">${formatQty(defaultQty)}</td>
+        <td>
+          <input class="qty-input" type="number" min="0" step="0.01" value="${formatQty(userQty)}"
+            onchange="updateQty('${c.id}', '${p}', this.value)" />
+        </td>
+        <td class="qty-required mono">${formatQty(requiredQty)}</td>
+        <td class="small">${c.note}</td>
+        <td><button class="btn-secondary" onclick="resetRow('${c.id}', '${p}')">Reset</button></td>
+      </tr>
+    `;
+  }).join('');
+
+  document.getElementById('visibleComponents').textContent = rows.length;
+  document.getElementById('uniqueUnits').textContent = formatQty(unitsPerDrone);
+  document.getElementById('totalUnits').textContent = formatQty(totalRequired);
+}
+
+function updateQty(id, platform, value) {
+  const numeric = Math.max(0, Number(value || 0));
+  state[id][platform] = numeric;
+  renderTable();
+}
+function resetRow(id, platform) {
+  const comp = components.find(c => c.id === id);
+  state[id][platform] = comp.defaults[platform] || 0;
+  renderTable();
+}
+function resetAllToDefaults() {
+  for (const c of components) {
+    state[c.id].P1 = c.defaults.P1;
+    state[c.id].P2 = c.defaults.P2;
+  }
+  renderTable();
+}
+
+function renderScenario() {
+  const deliveriesPerDay = Number(document.getElementById('deliveriesPerDay').value || 0);
+  const deliveriesPerDrone = Number(document.getElementById('deliveriesPerDrone').value || 0);
+  const bufferFactor = Number(document.getElementById('bufferFactor').value || 1);
+  const replacementRate = Number(document.getElementById('replacementRate').value || 0);
+
+  const activeFleet = deliveriesPerDrone > 0 ? Math.ceil(deliveriesPerDay / deliveriesPerDrone) : 0;
+  const fleetWithBuffer = Math.ceil(activeFleet * bufferFactor);
+  const buildPerDay = Math.ceil(fleetWithBuffer * replacementRate);
+
+  const bufferOnly144 = Math.ceil(activeFleet * 2);
+  const bufferPlusReserve166 = Math.ceil(bufferOnly144 * 1.15);
+
+  document.getElementById('activeFleet').textContent = formatQty(activeFleet);
+  document.getElementById('fleetWithBuffer').textContent = formatQty(fleetWithBuffer);
+  document.getElementById('buildPerDay').textContent = formatQty(buildPerDay);
+  document.getElementById('example144').textContent = formatQty(bufferOnly144);
+  document.getElementById('example166').textContent = formatQty(bufferPlusReserve166);
+  document.getElementById('example144Text').textContent = `${formatQty(deliveriesPerDay)} ÷ ${formatQty(deliveriesPerDrone)} = ${formatQty(activeFleet)} active drones, then ${formatQty(activeFleet)} × 2.00 = ${formatQty(bufferOnly144)}.`;
+  document.getElementById('example166Text').textContent = `${formatQty(bufferOnly144)} × 1.15 = ${formatQty(bufferPlusReserve166)} total drones after adding a 15% maintenance / reserve layer.`;
+}
+
+function exportCSV() {
+  const p = currentPlatform();
+  const drones = currentDroneCount();
+  const rows = visibleComponentsList().map(c => {
+    const defaultQty = c.defaults[p] || 0;
+    const userQty = Number(state[c.id][p] ?? defaultQty);
+    const requiredQty = userQty * drones;
+    return [c.id, c.name, c.cat, p, defaultQty, userQty, requiredQty, c.note]
+      .map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
+  });
+  const csv = ['ID,Component,Category,Platform,Default per Drone,User Qty per Drone,Required Qty,Note', ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `zipline_component_requirements_${p}_${currentDroneCount()}_drones.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+['platformSelect','droneCount','deliveriesPerDay','deliveriesPerDrone','bufferFactor','replacementRate']
+  .forEach(id => document.getElementById(id).addEventListener('input', () => { renderTable(); renderScenario(); }));
+
+renderTable();
+renderScenario();
+</script>
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zipline Level 1 Component Risk Dashboard</title>
+<style>
+  :root {
+    --bg: #f7f8fb; --card: #ffffff; --text: #18212f; --muted: #5f6b7a; --line: #d8dee8;
+    --blue: #2457d6; --blue-soft: #eaf0ff; --green: #1f7a45; --green-soft: #e8f5ec;
+    --amber: #9a6700; --amber-soft: #fff4d6; --red: #b42318; --red-soft: #fdecec;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: var(--text); }
+  .wrap { max-width: 1520px; margin: 0 auto; padding: 20px; }
+  .hero, .panel, .stat { background: var(--card); border: 1px solid var(--line); border-radius: 18px; }
+  .hero { padding: 20px 22px; margin-bottom: 16px; }
+  .hero h1 { margin: 0 0 8px 0; font-size: 28px; }
+  .hero p { margin: 0; color: var(--muted); line-height: 1.5; }
+  .tabs { display: flex; gap: 8px; margin: 0 0 16px 0; flex-wrap: wrap; }
+  .tab-btn { border: 1px solid var(--line); background: var(--card); padding: 10px 16px; border-radius: 999px; font-weight: 700; cursor: pointer; color: var(--muted); }
+  .tab-btn.active { background: var(--blue-soft); color: var(--blue); border-color: #cdd9ff; }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+  .stat { padding: 16px; }
+  .stat .label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .stat .value { font-size: 28px; font-weight: 700; }
+  .panel { padding: 16px; margin-bottom: 16px; }
+  .panel h2 { margin: 0 0 10px 0; font-size: 20px; }
+  .panel p { margin: 0; color: var(--muted); line-height: 1.5; }
+  .legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+  .legend-card { border-radius: 14px; padding: 14px; border: 1px solid var(--line); }
+  .legend-card h3 { margin: 0 0 8px 0; font-size: 15px; }
+  .legend-card p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .legend-blue { background: var(--blue-soft); }
+  .legend-green { background: var(--green-soft); }
+  .legend-amber { background: var(--amber-soft); }
+  .controls { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr; gap: 10px; margin-top: 12px; }
+  input, select { width: 100%; padding: 11px 12px; border-radius: 12px; border: 1px solid var(--line); background: #fff; color: var(--text); font-size: 14px; }
+  .table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 16px; background: var(--card); }
+  table { width: 100%; border-collapse: collapse; min-width: 1600px; }
+  thead th { position: sticky; top: 0; background: #f0f4fa; z-index: 2; text-align: left; font-size: 12px; padding: 12px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  tbody td { padding: 12px 10px; border-bottom: 1px solid #edf1f6; vertical-align: top; font-size: 13px; line-height: 1.45; }
+  tbody tr:hover { background: #fafcff; }
+  .pill { display: inline-block; padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .pill-low { background: var(--green-soft); color: var(--green); }
+  .pill-med { background: var(--amber-soft); color: var(--amber); }
+  .pill-high { background: var(--red-soft); color: var(--red); }
+  .pill-blue { background: var(--blue-soft); color: var(--blue); }
+  .small { font-size: 12px; color: var(--muted); }
+  .method, .footer { margin-top: 10px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .footer { margin-top: 16px; }
+  .row-title { font-weight: 700; margin-bottom: 4px; }
+  .note { max-width: 320px; }
+  .settings-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; align-items: start; }
+  .settings-block, .score-card { border: 1px solid var(--line); border-radius: 16px; padding: 14px; background: #fcfdff; margin-bottom: 14px; }
+  .settings-block h3, .score-card h3 { margin: 0 0 10px 0; font-size: 16px; }
+  .score-card p { margin: 0 0 8px 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .settings-row { display: grid; grid-template-columns: 1.8fr .8fr .8fr; gap: 8px; margin-bottom: 8px; align-items: center; }
+  .settings-row.compact { grid-template-columns: 1.5fr 1fr; }
+  .settings-row label { font-size: 13px; font-weight: 600; }
+  .settings-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  button.action { border: 1px solid var(--line); border-radius: 12px; background: var(--card); padding: 10px 14px; cursor: pointer; font-weight: 700; }
+  button.primary { background: var(--blue); color: white; border-color: var(--blue); }
+  .mono { font-family: Consolas, Monaco, monospace; }
+  .subtle-head { font-size: 12px; color: var(--muted); font-weight: 700; margin: 8px 0; }
+  @media (max-width: 1100px) {
+    .grid, .legend, .controls, .settings-grid { grid-template-columns: 1fr; }
+    .settings-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>Zipline Level 1 Component Risk Dashboard</h1>
+      <p>
+        This version includes the Level 1 dashboard plus a scoring framework tab where users can see the default formulas,
+        default score levels, and edit the pillar scoring logic used for Lead-Time Volatility, Capacity Responsiveness,
+        and Geographic Concentration Risk.
+      </p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="dashboard">Level 1 Dashboard</button>
+      <button class="tab-btn" data-tab="scoring">Scoring Framework</button>
+    </div>
+
+    <div id="dashboard" class="tab-pane active">
+      <div class="grid">
+        <div class="stat"><div class="label">Total components</div><div class="value" id="stat-components">0</div></div>
+        <div class="stat"><div class="label">Mapped with supplier data</div><div class="value" id="stat-mapped">0</div></div>
+        <div class="stat"><div class="label">Avg composite risk</div><div class="value" id="stat-composite">0</div></div>
+        <div class="stat"><div class="label">High-priority rows (≥10)</div><div class="value" id="stat-priority">0</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>What the scores mean</h2>
+        <div class="legend">
+          <div class="legend-card legend-blue">
+            <h3>Composite Risk Score</h3>
+            <p>Overall supply disruption risk. It blends Lead-Time, Capacity, and Geographic scores into one 1–5 score.</p>
+          </div>
+          <div class="legend-card legend-green">
+            <h3>Priority Score</h3>
+            <p>Production importance once criticality is applied. Formula: Composite Risk × Criticality.</p>
+          </div>
+          <div class="legend-card legend-amber">
+            <h3>Recommendation</h3>
+            <p>Action guidance generated from the Priority Score thresholds in the Scoring Framework tab.</p>
+          </div>
+        </div>
+        <div class="method">
+          The Scoring Framework tab now lets users edit not only the weights and thresholds, but also the actual score levels
+          used for Lead-Time Volatility, Capacity Responsiveness, and Geographic Concentration Risk.
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Filters</h2>
+        <div class="controls">
+          <input id="searchBox" type="text" placeholder="Search component, category, ID, recommendation..." />
+          <select id="categoryFilter"><option value="">All categories</option></select>
+          <select id="platformFilter">
+            <option value="">All platforms</option>
+            <option value="P1">P1</option>
+            <option value="P2">P2</option>
+          </select>
+          <select id="recommendationFilter">
+            <option value="">All recommendations</option>
+            <option value="Monitor">Monitor</option>
+            <option value="Dual-source candidate">Dual-source candidate</option>
+            <option value="Safety stock required">Safety stock required</option>
+            <option value="Strategic priority / redesign consideration">Strategic priority / redesign consideration</option>
+            <option value="Supplier mapping pending">Supplier mapping pending</option>
+          </select>
+          <select id="mappedFilter">
+            <option value="">Mapped + unmapped</option>
+            <option value="mapped">Mapped only</option>
+            <option value="unmapped">Unmapped only</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Component</th><th>Category</th><th>Platform</th><th>Criticality</th>
+              <th>Normal Lead Time</th><th>Peak Lead Time</th><th>Lead Time Score</th>
+              <th># Viable Suppliers</th><th>Capacity Score</th><th>Geo Risk View</th><th>Geo Score</th>
+              <th>Composite Risk</th><th>Priority Score</th><th>Recommendation</th><th>Supplier Snapshot</th><th>Component Note</th>
+            </tr>
+          </thead>
+          <tbody id="bodyRows"></tbody>
+        </table>
+      </div>
+      <div class="footer">
+        Source basis used for this dashboard: your uploaded component master, supplier identification dashboard,
+        and the scoring logic refined in the chat. Supplier data is proxy market data rather than Zipline’s actual internal supplier list.
+      </div>
+    </div>
+
+    <div id="scoring" class="tab-pane">
+      <div class="settings-grid">
+        <div>
+          <div class="panel">
+            <h2>Scoring logic with editable default levels</h2>
+            <p>
+              Users can edit the score levels for each pillar, the formula weights for Composite Risk, the criticality mapping,
+              and the decision thresholds for Recommendation.
+            </p>
+          </div>
+
+          <div class="settings-block">
+            <h3>Lead-Time Volatility Score</h3>
+            <p class="small mono" id="ltFormula">Lead-Time Volatility Ratio = Peak Lead Time ÷ Normal Lead Time</p>
+            <div class="subtle-head">Default levels</div>
+            <div class="settings-row compact"><label>Score 1 if ratio &lt;</label><input type="number" step="0.1" id="lt1" value="1.5"></div>
+            <div class="settings-row compact"><label>Score 2 if ratio &lt;</label><input type="number" step="0.1" id="lt2" value="2.0"></div>
+            <div class="settings-row compact"><label>Score 3 if ratio &lt;</label><input type="number" step="0.1" id="lt3" value="3.0"></div>
+            <div class="settings-row compact"><label>Score 4 if ratio &lt;</label><input type="number" step="0.1" id="lt4" value="5.0"></div>
+            <div class="small">Score 5 applies when the ratio is greater than or equal to the final threshold.</div>
+          </div>
+
+          <div class="settings-block">
+            <h3>Capacity Responsiveness Score</h3>
+            <p class="small mono" id="capFormula">Capacity Score = function(number of viable suppliers)</p>
+            <div class="subtle-head">Default levels</div>
+            <div class="settings-row compact"><label>Score 1 if viable suppliers &gt;</label><input type="number" step="1" id="cap1" value="6"></div>
+            <div class="settings-row compact"><label>Score 2 if viable suppliers ≥</label><input type="number" step="1" id="cap2" value="4"></div>
+            <div class="settings-row compact"><label>Score 3 if viable suppliers =</label><input type="number" step="1" id="cap3" value="3"></div>
+            <div class="settings-row compact"><label>Score 4 if viable suppliers =</label><input type="number" step="1" id="cap4" value="2"></div>
+            <div class="small">Score 5 applies when viable suppliers are less than or equal to 1.</div>
+          </div>
+
+          <div class="settings-block">
+            <h3>Geographic Concentration Risk Score</h3>
+            <p class="small mono" id="geoFormula">Geo Score = function(country concentration + geopolitical exposure)</p>
+            <div class="subtle-head">Default levels</div>
+            <div class="settings-row compact"><label>Score 1 if geo average ≤</label><input type="number" step="0.1" id="geo1" value="1.5"></div>
+            <div class="settings-row compact"><label>Score 2 if geo average ≤</label><input type="number" step="0.1" id="geo2" value="2.5"></div>
+            <div class="settings-row compact"><label>Score 3 if geo average ≤</label><input type="number" step="0.1" id="geo3" value="3.5"></div>
+            <div class="settings-row compact"><label>Score 4 if geo average ≤</label><input type="number" step="0.1" id="geo4" value="4.5"></div>
+            <div class="small">Score 5 applies when geo average is above the final threshold.</div>
+          </div>
+
+          <div class="settings-block">
+            <h3>Composite Risk formula weights</h3>
+            <p class="small mono" id="formulaComposite">Composite Risk = (Lead-Time × 0.30) + (Capacity × 0.30) + (Geo × 0.40)</p>
+            <div class="settings-row compact"><label>Lead-Time Score Weight</label><input type="number" step="0.01" id="wtLead" value="0.30"></div>
+            <div class="settings-row compact"><label>Capacity Score Weight</label><input type="number" step="0.01" id="wtCap" value="0.30"></div>
+            <div class="settings-row compact"><label>Geo Score Weight</label><input type="number" step="0.01" id="wtGeo" value="0.40"></div>
+            <div class="small">Keep the three weights totaling 1.00 for clean interpretation.</div>
+          </div>
+
+          <div class="settings-block">
+            <h3>Priority Score formula and criticality mapping</h3>
+            <p class="small mono">Priority Score = Composite Risk × Criticality</p>
+            <div class="settings-row compact"><label>Low Criticality</label><input type="number" step="1" id="critLow" value="1"></div>
+            <div class="settings-row compact"><label>Medium Criticality</label><input type="number" step="1" id="critMed" value="3"></div>
+            <div class="settings-row compact"><label>High Criticality</label><input type="number" step="1" id="critHigh" value="4"></div>
+          </div>
+
+          <div class="settings-block">
+            <h3>Recommendation thresholds</h3>
+            <div class="settings-row compact"><label>Monitor if Priority Score is below</label><input type="number" step="0.1" id="thrMonitor" value="8"></div>
+            <div class="settings-row compact"><label>Dual-source candidate if below</label><input type="number" step="0.1" id="thrDual" value="15"></div>
+            <div class="settings-row compact"><label>Safety stock required if below</label><input type="number" step="0.1" id="thrSafety" value="20"></div>
+            <p class="small" id="priorityBands">Monitor: &lt; 8 | Dual-source: 8–14.9 | Safety stock: 15–19.9 | Strategic: ≥ 20</p>
+          </div>
+
+          <div class="settings-actions">
+            <button class="action primary" id="applyScoring">Apply to Dashboard</button>
+            <button class="action" id="resetScoring">Reset Defaults</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="score-card">
+            <h3>Level 0 — Raw Inputs</h3>
+            <p>Criticality, Normal Lead Time, Peak Lead Time, viable supplier count, and geo exposure are the base inputs.</p>
+          </div>
+          <div class="score-card">
+            <h3>Level 1 — Pillar Scores</h3>
+            <p>Users can now edit the actual level bands for Lead-Time Volatility, Capacity Responsiveness, and Geographic Concentration Risk.</p>
+          </div>
+          <div class="score-card">
+            <h3>Level 2 — Composite Risk Score</h3>
+            <p>Composite Risk combines the three pillar scores using editable weights.</p>
+          </div>
+          <div class="score-card">
+            <h3>Level 3 — Priority Score</h3>
+            <p>Priority Score applies criticality so high-importance parts rise faster in ranking.</p>
+          </div>
+          <div class="score-card">
+            <h3>Level 4 — Recommendation</h3>
+            <p>Recommendation turns Priority Score into an action: Monitor, Dual-source, Safety stock, or Strategic priority.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Scoring preview</h2>
+        <p>
+          This preview updates live as users change the level bands and formulas. Clicking <strong>Apply to Dashboard</strong>
+          updates the full component table in the Dashboard tab.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th><th>Component</th><th>Lead Score</th><th>Capacity Score</th><th>Geo Score</th>
+                <th>Criticality</th><th>Composite</th><th>Priority</th><th>Recommendation</th>
+              </tr>
+            </thead>
+            <tbody id="previewRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const BASE_ROWS = [{"id": "AF-01", "component": "Carbon fiber composite fuselage", "category": "Airframe & Structure", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "2–4 wks", "peak_lead_time": "8–14 wks incl. ship", "lead_time_score": 3, "viable_suppliers": 6, "capacity_score": 2, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 2, "composite_risk": 2.3, "priority_score": 9.2, "recommendation": "Monitor", "note": "Inner structural frame; proprietary layup used by Zipline. Kevlar-reinforced section per EFC source.", "supplier_preview": "Toray Composite Materials America, Hexcel Corporation, DragonPlate (Allred & Associates) +3 more"}, {"id": "AF-02", "component": "Polystyrene / EPS outer shell", "category": "Airframe & Structure", "platform": "P1/P2", "criticality_label": "Low", "criticality": 1, "normal_lead_time": "2–3 wks", "peak_lead_time": "6–8 wks", "lead_time_score": 3, "viable_suppliers": 3, "capacity_score": 3, "geo_risk_view": "Mixed geographic exposure with some diversification", "geo_score": 1, "composite_risk": 2.2, "priority_score": 2.2, "recommendation": "Monitor", "note": "Frangible outer body designed to break on impact to absorb energy. Standard EPS foam.", "supplier_preview": "Universal Forest Products, Radva Corporation, Styrochem International"}, {"id": "AF-03", "component": "Fixed wing panel (carbon fiber)", "category": "Airframe & Structure", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "3–5 wks", "peak_lead_time": "8–14 wks", "lead_time_score": 3, "viable_suppliers": 4, "capacity_score": 2, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 2, "composite_risk": 2.3, "priority_score": 9.2, "recommendation": "Monitor", "note": "11 ft wingspan on P1. Provides aerodynamic lift during cruise. Ailerons integrated.", "supplier_preview": "Toray Composite Materials America, Teijin Carbon America, Solvay Composite Materials +1 more"}, {"id": "AF-04", "component": "Tail assembly (elevator + rudder)", "category": "Airframe & Structure", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "2–4 wks", "peak_lead_time": "8–14 wks", "lead_time_score": 4, "viable_suppliers": 3, "capacity_score": 3, "geo_risk_view": "Mixed geographic exposure with some diversification", "geo_score": 1, "composite_risk": 2.5, "priority_score": 10.0, "recommendation": "Monitor", "note": "Horizontal stabilizer (pitch control) and vertical stabilizer (yaw). Carbon fiber/composite.", "supplier_preview": "Protech Composites, DragonPlate, CRP Technology (CRP USA)"}, {"id": "AF-05", "component": "Servo actuators (control surfaces)", "category": "Airframe & Structure", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "3–5 wks", "peak_lead_time": "6–10 wks", "lead_time_score": 3, "viable_suppliers": 5, "capacity_score": 2, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 2, "composite_risk": 2.3, "priority_score": 9.2, "recommendation": "Monitor", "note": "Moves ailerons, elevator, rudder. P1 confirmed dual redundant servo linkages.", "supplier_preview": "Hitec RCD (Servoland), Futaba Corporation, MKS Servos USA +2 more"}, {"id": "AF-06", "component": "Pushrods and control linkages", "category": "Airframe & Structure", "platform": "P1/P2", "criticality_label": "Med", "criticality": 3, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Mechanical linkages from servo to control surface. Aluminum or carbon fiber rods.", "supplier_preview": "TBD"}, {"id": "AF-07", "component": "Droid airframe (P2 only)", "category": "Airframe & Structure", "platform": "P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Separate sub-vehicle housed in P2 Zip belly. Styrofoam + carbon fiber per MKBHD/IEEE Spectrum.", "supplier_preview": "TBD"}, {"id": "PR-01", "component": "Brushless DC motor (cruise)", "category": "Propulsion", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "2–6 wks", "peak_lead_time": "8–14 wks", "lead_time_score": 3, "viable_suppliers": 6, "capacity_score": 2, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 2, "composite_risk": 2.3, "priority_score": 9.2, "recommendation": "Monitor", "note": "P1 uses 2 motors for redundancy — can fly on single motor. Key supply chain risk item.", "supplier_preview": "KDE Direct, T-Motor (Nanchang), NeuMotors +3 more"}, {"id": "PR-02", "component": "Electronic Speed Controller (ESC)", "category": "Propulsion", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "5–10 wks", "peak_lead_time": "8–12 wks", "lead_time_score": 1, "viable_suppliers": 6, "capacity_score": 2, "geo_risk_view": "High concentration risk with significant exposure to elevated-risk sourcing", "geo_score": 2, "composite_risk": 1.7, "priority_score": 6.8, "recommendation": "Monitor", "note": "One ESC per motor. Regulates power from battery to motor. Independent per motor for redundancy.", "supplier_preview": "Hobbywing Technology, Castle Creations, T-Motor (ESC line) +3 more"}, {"id": "PR-03", "component": "Fixed propellers (main)", "category": "Propulsion", "platform": "P1/P2", "criticality_label": "Med", "criticality": 3, "normal_lead_time": "1–2 wks", "peak_lead_time": "6–10 wks", "lead_time_score": 5, "viable_suppliers": 4, "capacity_score": 2, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 2, "composite_risk": 2.9, "priority_score": 8.7, "recommendation": "Dual-source candidate", "note": "Converts rotational motion to thrust. Two-blade folding type typical for fixed-wing cruise efficiency.", "supplier_preview": "KDE Direct (CF Propellers), T-Motor Propellers, APC Propellers +1 more"}, {"id": "PR-04", "component": "VTOL lift motors (P2 Zip)", "category": "Propulsion", "platform": "P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Articulating propellers for vertical hover and transition flight on P2 platform.", "supplier_preview": "TBD"}, {"id": "PR-05", "component": "Droid thruster motors (P2)", "category": "Propulsion", "platform": "P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Thrusters on the Droid for precision positioning in wind during descent. Multi-axis.", "supplier_preview": "TBD"}, {"id": "PR-06", "component": "Motor mount / frame arms", "category": "Propulsion", "platform": "P1/P2", "criticality_label": "Low", "criticality": 1, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Structural mounts for motors on airframe. Carbon fiber or aluminum.", "supplier_preview": "TBD"}, {"id": "PW-01", "component": "LiPo / Li-ion main flight battery", "category": "Power & Energy", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "4–8 wks custom", "peak_lead_time": "8–16 wks", "lead_time_score": 3, "viable_suppliers": 6, "capacity_score": 2, "geo_risk_view": "High concentration risk with significant exposure to elevated-risk sourcing", "geo_score": 3, "composite_risk": 2.7, "priority_score": 10.8, "recommendation": "Dual-source candidate", "note": "Two interchangeable batteries on P1 per EFC. Quick-swap design for rapid turnaround. High geo risk (China-sourced cells).", "supplier_preview": "Grepow / Tattu (Shenzhen), MaxAmps Lithium Batteries, Epec Engineered Technologies +3 more"}, {"id": "PW-02", "component": "Battery management system (BMS)", "category": "Power & Energy", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "8–20 wks (chip shortage risk)", "peak_lead_time": "10–24 wks", "lead_time_score": 1, "viable_suppliers": 4, "capacity_score": 2, "geo_risk_view": "Mixed geographic exposure with some diversification", "geo_score": 2, "composite_risk": 1.7, "priority_score": 6.8, "recommendation": "Monitor", "note": "Monitors cell voltage, temperature, state of charge. Embedded in or paired with battery pack.", "supplier_preview": "Texas Instruments, Analog Devices (ADI), Digi-Key (distributor — TI/ADI) +1 more"}, {"id": "PW-03", "component": "Power distribution board (PDB)", "category": "Power & Energy", "platform": "P1/P2", "criticality_label": "Med", "criticality": 3, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Distributes power from battery to ESCs, flight controller, avionics. Often PCB-integrated.", "supplier_preview": "TBD"}, {"id": "PW-04", "component": "Voltage regulators (BEC)", "category": "Power & Energy", "platform": "P1/P2", "criticality_label": "Med", "criticality": 3, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Steps down voltage for servos, FC, and sensors. Battery eliminator circuit.", "supplier_preview": "TBD"}, {"id": "PW-05", "component": "Droid battery pack (P2)", "category": "Power & Energy", "platform": "P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Separate battery powering Droid thrusters and sensors during descent/delivery sequence.", "supplier_preview": "TBD"}, {"id": "AV-01", "component": "Flight controller / autopilot unit", "category": "Avionics & Flight Control", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "12–20 wks", "peak_lead_time": "12–24 wks", "lead_time_score": 1, "viable_suppliers": 5, "capacity_score": 2, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 2, "composite_risk": 1.7, "priority_score": 6.8, "recommendation": "Monitor", "note": "Proprietary ZipNav software; runs on Hercules + Atmel processors per EFC. Custom RTOS (Micrium).", "supplier_preview": "Cubic Defense (custom MCU integration), Auterion (Skynode), Holybro (Pixhawk 6X OEM) +2 more"}, {"id": "AV-02", "component": "Inertial Measurement Unit (IMU)", "category": "Avionics & Flight Control", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "12–24 wks", "peak_lead_time": "16–30 wks", "lead_time_score": 1, "viable_suppliers": 4, "capacity_score": 2, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 2, "composite_risk": 1.7, "priority_score": 6.8, "recommendation": "Monitor", "note": "Accelerometers + gyroscopes for orientation and stability. Critical for autonomous flight.", "supplier_preview": "InvenSense (TDK), Bosch Sensortec, STMicroelectronics +1 more"}, {"id": "AV-03", "component": "Barometric pressure sensor", "category": "Avionics & Flight Control", "platform": "P1/P2", "criticality_label": "Med", "criticality": 3, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Altitude estimation. Used in conjunction with GPS. MEMS-based sensor.", "supplier_preview": "TBD"}, {"id": "AV-04", "component": "Magnetometer / compass", "category": "Avionics & Flight Control", "platform": "P1/P2", "criticality_label": "Med", "criticality": 3, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Heading reference for navigation. Usually integrated with GPS module.", "supplier_preview": "TBD"}, {"id": "AV-05", "component": "Airspeed sensor (pitot tube)", "category": "Avionics & Flight Control", "platform": "P1", "criticality_label": "Med", "criticality": 3, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Critical for fixed-wing stall prevention. Measures differential pressure for True airspeed.", "supplier_preview": "TBD"}, {"id": "AV-06", "component": "Processor / microcontroller (MCU)", "category": "Avionics & Flight Control", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "14–36 wks (shortage risk)", "peak_lead_time": "16–40 wks (shortage risk)", "lead_time_score": 1, "viable_suppliers": 4, "capacity_score": 2, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 1, "composite_risk": 1.3, "priority_score": 5.2, "recommendation": "Monitor", "note": "Hercules (TI) and Atmel MCUs confirmed by EFC. Semiconductor supply chain risk.", "supplier_preview": "Texas Instruments (Hercules), Microchip Technology (Atmel heritage), STMicroelectronics (STM32) +1 more"}, {"id": "NA-01", "component": "GNSS / GPS module", "category": "Navigation & Sensing", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "6–14 wks", "peak_lead_time": "8–16 wks", "lead_time_score": 1, "viable_suppliers": 6, "capacity_score": 2, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 2, "composite_risk": 1.7, "priority_score": 6.8, "recommendation": "Monitor", "note": "Multi-constellation (GPS + GLONASS) for positioning accuracy. Coordinates logged for delivery routing.", "supplier_preview": "u-blox AG, Trimble (OEM GNSS), Novatel (Hexagon) +3 more"}, {"id": "NA-02", "component": "Computer vision / optical sensor", "category": "Navigation & Sensing", "platform": "P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "10–20 wks", "peak_lead_time": "16–28 wks", "lead_time_score": 1, "viable_suppliers": 4, "capacity_score": 2, "geo_risk_view": "Mixed geographic exposure with some diversification", "geo_score": 2, "composite_risk": 1.7, "priority_score": 6.8, "recommendation": "Monitor", "note": "Droid uses visual sensors to identify delivery site, detect obstacles during descent. IEEE Spectrum confirmed.", "supplier_preview": "Sony Semiconductor Solutions, OmniVision Technologies, ON Semiconductor (onsemi) +1 more"}, {"id": "NA-03", "component": "Obstacle avoidance sensor", "category": "Navigation & Sensing", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "8–14 wks", "peak_lead_time": "8–16 wks", "lead_time_score": 1, "viable_suppliers": 4, "capacity_score": 2, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 2, "composite_risk": 1.7, "priority_score": 6.8, "recommendation": "Monitor", "note": "Performs 500 safety checks per second per MKBHD source. Likely lidar or ultrasonic + camera fusion.", "supplier_preview": "Garmin LiDAR-Lite (Acuity), Benewake (TF-series LiDAR), Leddartech +1 more"}, {"id": "NA-04", "component": "Rangefinder / altimeter", "category": "Navigation & Sensing", "platform": "P1/P2", "criticality_label": "Med", "criticality": 3, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Precise altitude for landing and delivery. Laser or ultrasonic type.", "supplier_preview": "TBD"}, {"id": "NA-05", "component": "Winch / tether encoder (P2)", "category": "Navigation & Sensing", "platform": "P2", "criticality_label": "Med", "criticality": 3, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Measures tether length and tension during Droid descent. Integrated into P2 Zip belly mechanism.", "supplier_preview": "TBD"}, {"id": "CM-01", "component": "LTE / 4G cellular modem", "category": "Communication", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "6–16 wks", "peak_lead_time": "8–18 wks", "lead_time_score": 1, "viable_suppliers": 5, "capacity_score": 2, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 2, "composite_risk": 1.7, "priority_score": 6.8, "recommendation": "Monitor", "note": "Primary BVLOS communication link to ground control. Critical for regulatory compliance.", "supplier_preview": "Sierra Wireless (Semtech), Telit Cinterion, u-blox (SARA-R4 / LARA-R6) +2 more"}, {"id": "CM-02", "component": "RF telemetry module", "category": "Communication", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "4–10 wks", "peak_lead_time": "5–10 wks", "lead_time_score": 1, "viable_suppliers": 4, "capacity_score": 2, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 1, "composite_risk": 1.3, "priority_score": 5.2, "recommendation": "Monitor", "note": "Backup / redundant data link. 2.4 GHz or 900 MHz band. Real-time telemetry to ground station.", "supplier_preview": "Microhard Systems, FreeWave Technologies, RFD (RFDesign Pty) +1 more"}, {"id": "CM-03", "component": "Antenna (LTE + RF)", "category": "Communication", "platform": "P1/P2", "criticality_label": "Med", "criticality": 3, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Multiple antennas for LTE and RF links. Blade or patch type.", "supplier_preview": "TBD"}, {"id": "CM-04", "component": "ADS-B transponder", "category": "Communication", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "4–12 wks", "peak_lead_time": "6–12 wks", "lead_time_score": 1, "viable_suppliers": 3, "capacity_score": 3, "geo_risk_view": "Mixed geographic exposure with some diversification", "geo_score": 1, "composite_risk": 1.6, "priority_score": 6.4, "recommendation": "Monitor", "note": "FAA-required for BVLOS operations in US. Broadcasts position to manned aircraft.", "supplier_preview": "uAvionix, Sagetech Avionics, Aerobits"}, {"id": "PL-01", "component": "Payload bay / cargo compartment", "category": "Payload & Delivery", "platform": "P1/P2", "criticality_label": "Med", "criticality": 3, "normal_lead_time": "1–3 wks", "peak_lead_time": "2–4 wks", "lead_time_score": 2, "viable_suppliers": 3, "capacity_score": 3, "geo_risk_view": "Low regional diversity; sourcing clustered in one country", "geo_score": 1, "composite_risk": 1.9, "priority_score": 5.7, "recommendation": "Monitor", "note": "P1: up to 1.75 kg; P2 Droid: 2.5–3.5 kg. Thermally insulated for vaccine cold-chain delivery.", "supplier_preview": "Pelican Products, Cryopak (Phase change inserts), Sonoco ThermoSafe"}, {"id": "PL-02", "component": "Parachute release mechanism (P1)", "category": "Payload & Delivery", "platform": "P1", "criticality_label": "High", "criticality": 4, "normal_lead_time": "4–10 wks", "peak_lead_time": "6–14 wks", "lead_time_score": 1, "viable_suppliers": 3, "capacity_score": 3, "geo_risk_view": "Low regional diversity; sourcing clustered in one country", "geo_score": 1, "composite_risk": 1.6, "priority_score": 6.4, "recommendation": "Monitor", "note": "Drops medical package at target zone. 5m diameter landing accuracy. Servo-actuated release.", "supplier_preview": "Fruity Chutes, Butler Parachute Systems, Indemnis (Nexus parachute)"}, {"id": "PL-03", "component": "Winch / tether system (P2)", "category": "Payload & Delivery", "platform": "P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "10–18 wks", "peak_lead_time": "10–20 wks", "lead_time_score": 1, "viable_suppliers": 3, "capacity_score": 3, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 1, "composite_risk": 1.6, "priority_score": 6.4, "recommendation": "Monitor", "note": "Lowers Droid from Zip at 300 ft altitude. Motor-driven spool with tension control. Core P2 innovation.", "supplier_preview": "Maxon Motor AG, Faulhaber Group, Allied Motion (Allient)"}, {"id": "PL-04", "component": "Thermal insulation liner", "category": "Payload & Delivery", "platform": "P1/P2", "criticality_label": "Low", "criticality": 1, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Maintains cold-chain for vaccines and blood products. Phase-change materials or foam insert.", "supplier_preview": "TBD"}, {"id": "SF-01", "component": "Emergency parachute system", "category": "Safety & Redundancy", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "6–14 wks", "peak_lead_time": "8–16 wks", "lead_time_score": 1, "viable_suppliers": 3, "capacity_score": 3, "geo_risk_view": "Mixed geographic exposure with some diversification", "geo_score": 1, "composite_risk": 1.6, "priority_score": 6.4, "recommendation": "Monitor", "note": "Deployed on catastrophic failure. Confirmed on P1 (EFC). Last-resort safe descent for 20 kg drone.", "supplier_preview": "Indemnis, Fruity Chutes, Drone Rescue Systems"}, {"id": "SF-02", "component": "Redundant flight controller", "category": "Safety & Redundancy", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Independent backup flight hardware on both drone and ground servers per EFC source.", "supplier_preview": "TBD"}, {"id": "SF-03", "component": "Kevlar fuselage reinforcement", "category": "Safety & Redundancy", "platform": "P1", "criticality_label": "Med", "criticality": 3, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Impact protection layer in fuselage. Confirmed in EFC technical documentation.", "supplier_preview": "TBD"}, {"id": "GS-01", "component": "Pneumatic launch rail / catapult", "category": "Ground Support", "platform": "P1", "criticality_label": "High", "criticality": 4, "normal_lead_time": "16–28 wks", "peak_lead_time": "16–32 wks", "lead_time_score": 1, "viable_suppliers": 3, "capacity_score": 3, "geo_risk_view": "Moderate concentration, but diversified options exist", "geo_score": 1, "composite_risk": 1.6, "priority_score": 6.4, "recommendation": "Monitor", "note": "Accelerates P1 from 0–60 mph in 0.25 sec. Zipline proprietary launch infrastructure at each depot.", "supplier_preview": "Robonic Ltd, UAV Factory, JATO Dynamics (custom)"}, {"id": "GS-02", "component": "Battery charging station", "category": "Ground Support", "platform": "P1/P2", "criticality_label": "Med", "criticality": 3, "normal_lead_time": "TBD", "peak_lead_time": "TBD", "lead_time_score": null, "viable_suppliers": null, "capacity_score": null, "geo_risk_view": "Supplier mapping pending for this component", "geo_score": null, "composite_risk": null, "priority_score": null, "recommendation": "Supplier mapping pending", "note": "Fast-charge system for quick-swap battery packs. Required at each distribution center.", "supplier_preview": "TBD"}, {"id": "GS-03", "component": "Ground control server / software", "category": "Ground Support", "platform": "P1/P2", "criticality_label": "High", "criticality": 4, "normal_lead_time": "3–8 wks", "peak_lead_time": "4–12 wks", "lead_time_score": 1, "viable_suppliers": 3, "capacity_score": 3, "geo_risk_view": "Low regional diversity; sourcing clustered in one country", "geo_score": 1, "composite_risk": 1.6, "priority_score": 6.4, "recommendation": "Monitor", "note": "C++ and Python on ground systems. Redundant flight hardware also on ground servers per EFC.", "supplier_preview": "Dell Technologies (server hardware), Hewlett Packard Enterprise, Cisco Systems (networking)"}];
+let ROWS = JSON.parse(JSON.stringify(BASE_ROWS));
+
+const DEFAULTS = {
+  lt1: 1.5, lt2: 2.0, lt3: 3.0, lt4: 5.0,
+  cap1: 6, cap2: 4, cap3: 3, cap4: 2,
+  geo1: 1.5, geo2: 2.5, geo3: 3.5, geo4: 4.5,
+  wtLead: 0.30, wtCap: 0.30, wtGeo: 0.40,
+  critLow: 1, critMed: 3, critHigh: 4,
+  thrMonitor: 8, thrDual: 15, thrSafety: 20
+};
+
+function chipForRecommendation(text) {
+  if (!text) return '<span class="pill pill-blue">TBD</span>';
+  if (text.includes('Monitor')) return '<span class="pill pill-low">Monitor</span>';
+  if (text.includes('Dual-source')) return '<span class="pill pill-blue">Dual-source</span>';
+  if (text.includes('Safety stock')) return '<span class="pill pill-med">Safety stock</span>';
+  if (text.includes('Strategic')) return '<span class="pill pill-high">Strategic</span>';
+  return '<span class="pill pill-med">Pending</span>';
+}
+
+function critPill(label, value) {
+  if (label === 'High') return `<span class="pill pill-high">${value} (${label})</span>`;
+  if (label === 'Med') return `<span class="pill pill-med">${value} (${label})</span>`;
+  return `<span class="pill pill-low">${value} (${label})</span>`;
+}
+
+function scoreCell(v) {
+  if (v === null || v === undefined) return '<span class="small">TBD</span>';
+  return `<strong>${Number(v).toFixed(1).replace('.0','')}</strong>`;
+}
+
+function fillCategoryFilter() {
+  const sel = document.getElementById('categoryFilter');
+  [...new Set(BASE_ROWS.map(r => r.category))].sort().forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c; sel.appendChild(opt);
+  });
+}
+
+function currentSettings() {
+  const ids = Object.keys(DEFAULTS);
+  const out = {};
+  ids.forEach(id => out[id] = parseFloat(document.getElementById(id).value));
+  return out;
+}
+
+function mapCriticality(label, s) {
+  if (label === 'Low') return s.critLow;
+  if (label === 'Med') return s.critMed;
+  return s.critHigh;
+}
+
+function scoreLeadRatio(ratio, s) {
+  if (ratio === null || ratio === undefined || Number.isNaN(ratio)) return null;
+  if (ratio < s.lt1) return 1;
+  if (ratio < s.lt2) return 2;
+  if (ratio < s.lt3) return 3;
+  if (ratio < s.lt4) return 4;
+  return 5;
+}
+
+function scoreCapacity(n, s) {
+  if (n === null || n === undefined || Number.isNaN(n)) return null;
+  if (n > s.cap1) return 1;
+  if (n >= s.cap2) return 2;
+  if (n === s.cap3) return 3;
+  if (n === s.cap4) return 4;
+  return 5;
+}
+
+function scoreGeo(avg, s) {
+  if (avg === null || avg === undefined || Number.isNaN(avg)) return null;
+  if (avg <= s.geo1) return 1;
+  if (avg <= s.geo2) return 2;
+  if (avg <= s.geo3) return 3;
+  if (avg <= s.geo4) return 4;
+  return 5;
+}
+
+function recFromPriority(priority, s) {
+  if (priority === null || priority === undefined || Number.isNaN(priority)) return 'Supplier mapping pending';
+  if (priority < s.thrMonitor) return 'Monitor';
+  if (priority < s.thrDual) return 'Dual-source candidate';
+  if (priority < s.thrSafety) return 'Safety stock required';
+  return 'Strategic priority / redesign consideration';
+}
+
+function inferLeadRatio(row) {
+  const n = extractMid(row.normal_lead_time);
+  const p = extractMid(row.peak_lead_time);
+  if (!n || !p) return null;
+  return p / n;
+}
+
+function extractMid(txt) {
+  if (!txt || txt === 'TBD') return null;
+  const nums = (txt.match(/\d+(?:\.\d+)?/g) || []).map(Number);
+  if (!nums.length) return null;
+  return nums.length === 1 ? nums[0] : (nums[0] + nums[1]) / 2;
+}
+
+function inferGeoAverage(row) {
+  const val = row.geo_score;
+  if (val === null || val === undefined) return null;
+  return val;
+}
+
+function recomputeRows() {
+  const s = currentSettings();
+  ROWS = BASE_ROWS.map(r => {
+    const out = JSON.parse(JSON.stringify(r));
+    out.criticality = mapCriticality(out.criticality_label, s);
+
+    const ratio = inferLeadRatio(out);
+    const capN = out.viable_suppliers;
+    const geoAvg = inferGeoAverage(out);
+
+    if (out.composite_risk !== null) {
+      out.lead_time_score = scoreLeadRatio(ratio, s);
+      out.capacity_score = scoreCapacity(capN, s);
+      out.geo_score = scoreGeo(geoAvg, s);
+      out.composite_risk = +(out.lead_time_score * s.wtLead + out.capacity_score * s.wtCap + out.geo_score * s.wtGeo).toFixed(1);
+      out.priority_score = +(out.composite_risk * out.criticality).toFixed(1);
+      out.recommendation = recFromPriority(out.priority_score, s);
+    }
+    return out;
+  });
+
+  document.getElementById('formulaComposite').textContent =
+    `Composite Risk = (Lead-Time × ${s.wtLead.toFixed(2)}) + (Capacity × ${s.wtCap.toFixed(2)}) + (Geo × ${s.wtGeo.toFixed(2)})`;
+
+  document.getElementById('priorityBands').textContent =
+    `Monitor: < ${s.thrMonitor} | Dual-source: ${s.thrMonitor}–${(s.thrDual - 0.1).toFixed(1)} | Safety stock: ${s.thrDual}–${(s.thrSafety - 0.1).toFixed(1)} | Strategic: ≥ ${s.thrSafety}`;
+}
+
+function render() {
+  const search = document.getElementById('searchBox').value.toLowerCase().trim();
+  const cat = document.getElementById('categoryFilter').value;
+  const platform = document.getElementById('platformFilter').value;
+  const rec = document.getElementById('recommendationFilter').value;
+  const mapped = document.getElementById('mappedFilter').value;
+
+  const filtered = ROWS.filter(r => {
+    const hay = [r.id, r.component, r.category, r.platform, r.recommendation, r.note, r.geo_risk_view, r.supplier_preview].join(' ').toLowerCase();
+    if (search && !hay.includes(search)) return false;
+    if (cat && r.category !== cat) return false;
+    if (platform && !r.platform.includes(platform)) return false;
+    if (rec && r.recommendation !== rec) return false;
+    if (mapped === 'mapped' && r.composite_risk === null) return false;
+    if (mapped === 'unmapped' && r.composite_risk !== null) return false;
+    return true;
+  });
+
+  document.getElementById('bodyRows').innerHTML = filtered.map(r => `
+    <tr>
+      <td><strong>${r.id}</strong></td>
+      <td><div class="row-title">${r.component}</div></td>
+      <td>${r.category}</td>
+      <td>${r.platform}</td>
+      <td>${critPill(r.criticality_label, r.criticality)}</td>
+      <td>${r.normal_lead_time || 'TBD'}</td>
+      <td>${r.peak_lead_time || 'TBD'}</td>
+      <td>${scoreCell(r.lead_time_score)}</td>
+      <td>${r.viable_suppliers ?? '<span class="small">TBD</span>'}</td>
+      <td>${scoreCell(r.capacity_score)}</td>
+      <td><div class="note">${r.geo_risk_view}</div></td>
+      <td>${scoreCell(r.geo_score)}</td>
+      <td>${scoreCell(r.composite_risk)}</td>
+      <td>${scoreCell(r.priority_score)}</td>
+      <td>${chipForRecommendation(r.recommendation)}</td>
+      <td><div class="note">${r.supplier_preview || 'TBD'}</div></td>
+      <td><div class="note small">${r.note}</div></td>
+    </tr>`).join('');
+
+  const mappedRows = ROWS.filter(r => r.composite_risk !== null);
+  document.getElementById('stat-components').textContent = ROWS.length;
+  document.getElementById('stat-mapped').textContent = mappedRows.length;
+  document.getElementById('stat-composite').textContent = mappedRows.length ? (mappedRows.reduce((a,b)=>a+b.composite_risk,0)/mappedRows.length).toFixed(1) : 'TBD';
+  document.getElementById('stat-priority').textContent = mappedRows.filter(r => r.priority_score >= 10).length;
+}
+
+function renderPreview() {
+  const mapped = ROWS.filter(r => r.composite_risk !== null);
+  const picks = [];
+  ['AF-01','MCU-01','PWR-01','NAV-01'].forEach(id => {
+    const found = mapped.find(r => r.id === id);
+    if (found && !picks.find(p => p.id === found.id)) picks.push(found);
+  });
+  mapped.sort((a,b)=>b.priority_score-a.priority_score).slice(0,4).forEach(r => {
+    if (!picks.find(p=>p.id===r.id)) picks.push(r);
+  });
+  document.getElementById('previewRows').innerHTML = picks.slice(0,6).map(r => `
+    <tr>
+      <td>${r.id}</td>
+      <td>${r.component}</td>
+      <td>${r.lead_time_score}</td>
+      <td>${r.capacity_score}</td>
+      <td>${r.geo_score}</td>
+      <td>${r.criticality}</td>
+      <td>${r.composite_risk}</td>
+      <td>${r.priority_score}</td>
+      <td>${chipForRecommendation(r.recommendation)}</td>
+    </tr>`).join('');
+}
+
+function applyAndRefresh() {
+  recomputeRows();
+  render();
+  renderPreview();
+}
+
+function resetDefaults() {
+  Object.entries(DEFAULTS).forEach(([k,v]) => document.getElementById(k).value = v);
+  applyAndRefresh();
+}
+
+function wireTabs() {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  fillCategoryFilter();
+  wireTabs();
+  recomputeRows();
+  render();
+  renderPreview();
+
+  ['searchBox','categoryFilter','platformFilter','recommendationFilter','mappedFilter'].forEach(id => {
+    document.getElementById(id).addEventListener('input', render);
+    document.getElementById(id).addEventListener('change', render);
+  });
+
+  [...Object.keys(DEFAULTS)].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      recomputeRows();
+      renderPreview();
+    });
+  });
+
+  document.getElementById('applyScoring').addEventListener('click', applyAndRefresh);
+  document.getElementById('resetScoring').addEventListener('click', resetDefaults);
+});
+</script>
+</body>
+</html>

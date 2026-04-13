@@ -1,0 +1,316 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,sans-serif);font-size:13px}
+.toolbar{padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.toolbar input{flex:1;min-width:160px;padding:6px 10px;border:0.5px solid var(--color-border-secondary);border-radius:6px;background:var(--color-background-primary);color:var(--color-text-primary);font-size:12px}
+.toolbar select{padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:6px;background:var(--color-background-primary);color:var(--color-text-primary);font-size:12px}
+.stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.stat{background:var(--color-background-secondary);border-radius:6px;padding:8px 10px}
+.stat-v{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.stat-l{font-size:10px;color:var(--color-text-secondary);margin-top:1px}
+.tbl-wrap{overflow-x:auto;overflow-y:auto;max-height:520px}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+thead th{padding:7px 10px;text-align:left;font-weight:500;font-size:10px;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);position:sticky;top:0;z-index:2;white-space:nowrap;cursor:pointer;user-select:none}
+thead th:hover{color:var(--color-text-primary)}
+tbody tr{border-bottom:0.5px solid var(--color-border-tertiary)}
+tbody tr:hover{background:var(--color-background-secondary)}
+td{padding:7px 10px;vertical-align:middle;color:var(--color-text-primary)}
+.comp-id{font-family:var(--font-mono,monospace);font-size:10px;color:var(--color-text-secondary)}
+.comp-name{font-weight:500;font-size:12px;max-width:160px}
+.sup-name{font-weight:500;max-width:130px}
+.flag{font-size:13px;margin-right:3px}
+.country-cell{white-space:nowrap}
+.badge{display:inline-block;font-size:9px;font-weight:500;padding:2px 6px;border-radius:10px;white-space:nowrap}
+.geo-h{background:#FCEBEB;color:#791F1F}.geo-m{background:#FAEEDA;color:#633806}.geo-l{background:#EAF3DE;color:#27500A}
+.crit-h{color:#A32D2D;font-weight:600}.crit-m{color:#854F0B;font-weight:600}.crit-l{color:#3B6D11;font-weight:600}
+.platform-chip{display:inline-block;font-size:9px;padding:1px 5px;border-radius:3px;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary);margin:1px}
+.stars{color:#BA7517;font-size:11px}
+.note-cell{font-size:10px;color:var(--color-text-secondary);max-width:200px;line-height:1.4}
+.footer{padding:8px 14px;font-size:10px;color:var(--color-text-secondary);border-top:0.5px solid var(--color-border-tertiary)}
+</style>
+
+<div class="toolbar">
+  <input type="text" id="search" placeholder="Search component, supplier, country…" oninput="applyFilters()">
+  <select id="catF" onchange="applyFilters()">
+    <option value="">All Categories</option>
+    <option>Airframe & Structure</option>
+    <option>Propulsion</option>
+    <option>Power & Energy</option>
+    <option>Avionics & Flight Control</option>
+    <option>Navigation & Sensing</option>
+    <option>Communication</option>
+    <option>Payload & Delivery</option>
+    <option>Safety & Redundancy</option>
+    <option>Ground Support</option>
+  </select>
+  <select id="critF" onchange="applyFilters()">
+    <option value="">All Criticality</option>
+    <option>High</option>
+    <option>Med</option>
+    <option>Low</option>
+  </select>
+  <select id="geoF" onchange="applyFilters()">
+    <option value="">All Geo Risk</option>
+    <option>High</option>
+    <option>Medium</option>
+    <option>Low</option>
+  </select>
+  <select id="platF" onchange="applyFilters()">
+    <option value="">P1 & P2</option>
+    <option>P1</option>
+    <option>P2</option>
+  </select>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-v" id="st-rows">0</div><div class="stat-l">Supplier rows</div></div>
+  <div class="stat"><div class="stat-v" id="st-comps">0</div><div class="stat-l">Components</div></div>
+  <div class="stat"><div class="stat-v" id="st-countries">0</div><div class="stat-l">Countries</div></div>
+  <div class="stat"><div class="stat-v" id="st-highgeo">0</div><div class="stat-l">High geo-risk rows</div></div>
+  <div class="stat"><div class="stat-v" id="st-us">0</div><div class="stat-l">US-sourced rows</div></div>
+</div>
+
+<div class="tbl-wrap">
+<table>
+<thead>
+<tr>
+  <th>Comp ID</th>
+  <th>Component</th>
+  <th>Category</th>
+  <th>Platform</th>
+  <th>Supplier</th>
+  <th>Country</th>
+  <th>Continent</th>
+  <th>Geo Conc Risk</th>
+  <th>Quality ★</th>
+  <th>Unit Price (USD)</th>
+  <th>MOQ</th>
+  <th>Est. Annual Contract</th>
+  <th>Lead Time → SF</th>
+  <th>NDAA OK</th>
+  <th>Notes</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+<div class="footer" id="footer"></div>
+
+<script>
+const D=[
+// ── AF-01 Carbon fiber composite fuselage ──
+{id:"AF-01",comp:"Carbon fiber fuselage",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"Toray Composite Materials America",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$180–$320/kg prepreg",moq:"50 kg",aec:"$85,000–$150,000/yr",lt:"2–4 wks",ndaa:"Yes",note:"Toray T700/T800 series; aerospace-grade UAV prepreg; CA distributor (Tacoma, WA)"},
+{id:"AF-01",comp:"Carbon fiber fuselage",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"Hexcel Corporation",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$200–$380/kg",moq:"50 kg",aec:"$90,000–$170,000/yr",lt:"3–5 wks",ndaa:"Yes",note:"HexPly M78 & M901 prepregs; authorized UAV distributor Coast-Line Intl (CA)"},
+{id:"AF-01",comp:"Carbon fiber fuselage",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"DragonPlate (Allred & Associates)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$90–$250/kg sheet",moq:"5 sheets",aec:"$30,000–$80,000/yr",lt:"1–2 wks",ndaa:"Yes",note:"Off-shelf + custom UAV parts; ships same-week from NY; good for prototyping"},
+{id:"AF-01",comp:"Carbon fiber fuselage",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"Protech Composites",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$70–$180/kg",moq:"10 kg",aec:"$25,000–$60,000/yr",lt:"1–3 wks",ndaa:"Yes",note:"UAV-focused CF sheet & tube supplier; WA state"},
+{id:"AF-01",comp:"Carbon fiber fuselage",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"SGL Carbon",country:"Germany",cont:"Europe",flag:"🇩🇪",geo:"Low",q:5,price:"$160–$300/kg",moq:"100 kg",aec:"$100,000–$200,000/yr",lt:"6–10 wks",ndaa:"Yes",note:"Premium aerospace CF fiber; longer lead; good second source for EU-origin diversity"},
+{id:"AF-01",comp:"Carbon fiber fuselage",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"Xinbo Composites",country:"China",cont:"Asia",flag:"🇨🇳",geo:"High",q:3,price:"$35–$80/kg",moq:"100 kg",aec:"$15,000–$40,000/yr",lt:"8–14 wks incl. ship",ndaa:"No",note:"Low cost; high geo risk; tariff exposure; NDAA concern for defense-adjacent use"},
+
+// ── AF-02 EPS outer shell ──
+{id:"AF-02",comp:"EPS/polystyrene outer shell",cat:"Airframe & Structure",plat:"P1/P2",crit:"Low",sup:"Universal Forest Products",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:3,price:"$2–$8/unit",moq:"500 units",aec:"$5,000–$20,000/yr",lt:"1–2 wks",ndaa:"Yes",note:"Commodity EPS foam; easily dual-sourced; very low supply risk"},
+{id:"AF-02",comp:"EPS/polystyrene outer shell",cat:"Airframe & Structure",plat:"P1/P2",crit:"Low",sup:"Radva Corporation",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:3,price:"$3–$10/unit custom",moq:"200 units",aec:"$6,000–$18,000/yr",lt:"2–3 wks",ndaa:"Yes",note:"Custom EPS molding for aerospace; VA-based"},
+{id:"AF-02",comp:"EPS/polystyrene outer shell",cat:"Airframe & Structure",plat:"P1/P2",crit:"Low",sup:"Styrochem International",country:"Finland",cont:"Europe",flag:"🇫🇮",geo:"Low",q:4,price:"$4–$12/unit",moq:"300 units",aec:"$8,000–$25,000/yr",lt:"6–8 wks",ndaa:"Yes",note:"High-quality EPS; European origin adds geo diversity"},
+
+// ── AF-03 Fixed wing panel ──
+{id:"AF-03",comp:"Fixed wing panel (CF)",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"Toray Composite Materials America",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$200–$400/kg prepreg",moq:"50 kg",aec:"$120,000–$250,000/yr",lt:"2–4 wks",ndaa:"Yes",note:"Primary wing spar and skin material; T800 series standard"},
+{id:"AF-03",comp:"Fixed wing panel (CF)",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"Teijin Carbon America",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$190–$360/kg",moq:"50 kg",aec:"$100,000–$220,000/yr",lt:"3–5 wks",ndaa:"Yes",note:"Tenax-E HTS40 and STS40 fibers; aerospace-qualified"},
+{id:"AF-03",comp:"Fixed wing panel (CF)",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"Solvay Composite Materials",country:"Belgium",cont:"Europe",flag:"🇧🇪",geo:"Low",q:5,price:"$220–$420/kg",moq:"100 kg",aec:"$130,000–$280,000/yr",lt:"7–12 wks",ndaa:"Yes",note:"CYCOM aerospace prepregs; used in UAV wing structures globally"},
+{id:"AF-03",comp:"Fixed wing panel (CF)",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"Mitsubishi Chemical Advanced Materials",country:"Japan",cont:"Asia",flag:"🇯🇵",geo:"Medium",q:5,price:"$210–$390/kg",moq:"50 kg",aec:"$110,000–$230,000/yr",lt:"8–14 wks",ndaa:"Yes",note:"TR50S/TR30S fiber; Japan-origin; lower geo risk than China"},
+
+// ── AF-04 Tail assembly ──
+{id:"AF-04",comp:"Tail assembly (elevator + rudder)",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"Protech Composites",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$150–$400/assembly",moq:"20 units",aec:"$40,000–$100,000/yr",lt:"2–4 wks",ndaa:"Yes",note:"Custom UAV tail structures; CNC cut CF panels"},
+{id:"AF-04",comp:"Tail assembly (elevator + rudder)",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"DragonPlate",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$120–$350/assembly",moq:"10 units",aec:"$30,000–$80,000/yr",lt:"1–3 wks",ndaa:"Yes",note:"Standard CF shapes adaptable for tail structures"},
+{id:"AF-04",comp:"Tail assembly (elevator + rudder)",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"CRP Technology (CRP USA)",country:"Italy",cont:"Europe",flag:"🇮🇹",geo:"Low",q:5,price:"$300–$700/assembly",moq:"10 units",aec:"$60,000–$150,000/yr",lt:"8–14 wks",ndaa:"Yes",note:"Windform XT2 composite; flight-validated UAV structures; premium quality"},
+
+// ── AF-05 Servo actuators ──
+{id:"AF-05",comp:"Servo actuators (control surfaces)",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"Hitec RCD (Servoland)",country:"South Korea",cont:"Asia",flag:"🇰🇷",geo:"Medium",q:5,price:"$40–$180/unit",moq:"50 units",moqraw:50,aec:"$30,000–$90,000/yr",lt:"2–4 wks",ndaa:"Yes",note:"Industry standard for UAV servos; HS-5086WP, D645MW widely used; ships from CA"},
+{id:"AF-05",comp:"Servo actuators (control surfaces)",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"Futaba Corporation",country:"Japan",cont:"Asia",flag:"🇯🇵",geo:"Medium",q:5,price:"$50–$200/unit",moq:"20 units",aec:"$35,000–$100,000/yr",lt:"3–6 wks",ndaa:"Yes",note:"BLS and S series digital servos; widely used in professional UAVs"},
+{id:"AF-05",comp:"Servo actuators (control surfaces)",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"MKS Servos USA",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$60–$220/unit",moq:"10 units",aec:"$40,000–$110,000/yr",lt:"1–2 wks",ndaa:"Yes",note:"High-torque digital servos; US stocking distributor; NDAA-friendly"},
+{id:"AF-05",comp:"Servo actuators (control surfaces)",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"Savox Servos",country:"Taiwan",cont:"Asia",flag:"🇹🇼",geo:"Medium",q:4,price:"$35–$160/unit",moq:"50 units",aec:"$25,000–$80,000/yr",lt:"3–5 wks",ndaa:"Yes",note:"Cost-effective UAV-grade servos; Taiwan origin reduces China geo risk"},
+{id:"AF-05",comp:"Servo actuators (control surfaces)",cat:"Airframe & Structure",plat:"P1/P2",crit:"High",sup:"Volz Servos",country:"Germany",cont:"Europe",flag:"🇩🇪",geo:"Low",q:5,price:"$150–$500/unit",moq:"10 units",aec:"$80,000–$200,000/yr",lt:"6–10 wks",ndaa:"Yes",note:"Aerospace-certified DA servos; used in military UAVs; highest reliability tier"},
+
+// ── PR-01 Brushless DC Motor (cruise) ──
+{id:"PR-01",comp:"Brushless DC motor (cruise)",cat:"Propulsion",plat:"P1/P2",crit:"High",sup:"KDE Direct",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$120–$450/unit",moq:"10 units",aec:"$80,000–$200,000/yr",lt:"1–3 wks",ndaa:"Yes",note:"NDAA-compliant; industrial UAV motors; manufactured USA; preferred for defense-adjacent programs"},
+{id:"PR-01",comp:"Brushless DC motor (cruise)",cat:"Propulsion",plat:"P1/P2",crit:"High",sup:"T-Motor (Nanchang)",country:"China",cont:"Asia",flag:"🇨🇳",geo:"High",q:5,price:"$60–$280/unit",moq:"10 units",aec:"$40,000–$120,000/yr",lt:"4–8 wks",ndaa:"No",note:"World-leading UAV motor quality; dominates market; high geo + NDAA risk"},
+{id:"PR-01",comp:"Brushless DC motor (cruise)",cat:"Propulsion",plat:"P1/P2",crit:"High",sup:"NeuMotors",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$200–$600/unit",moq:"5 units",aec:"$100,000–$250,000/yr",lt:"2–6 wks",ndaa:"Yes",note:"High-end aerospace UAV motors; used in research & military programs"},
+{id:"PR-01",comp:"Brushless DC motor (cruise)",cat:"Propulsion",plat:"P1/P2",crit:"High",sup:"Hacker Motor GmbH",country:"Germany",cont:"Europe",flag:"🇩🇪",geo:"Low",q:5,price:"$80–$350/unit",moq:"10 units",aec:"$60,000–$180,000/yr",lt:"5–9 wks",ndaa:"Yes",note:"High-efficiency BLDC motors; popular in fixed-wing UAV applications"},
+{id:"PR-01",comp:"Brushless DC motor (cruise)",cat:"Propulsion",plat:"P1/P2",crit:"High",sup:"Plettenberg Motoren",country:"Germany",cont:"Europe",flag:"🇩🇪",geo:"Low",q:5,price:"$180–$700/unit",moq:"5 units",aec:"$120,000–$300,000/yr",lt:"8–14 wks",ndaa:"Yes",note:"Premium CF motors; very high efficiency; aerospace-grade"},
+{id:"PR-01",comp:"Brushless DC motor (cruise)",cat:"Propulsion",plat:"P1/P2",crit:"High",sup:"Lumenier (GetFPV/TBS)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$50–$180/unit",moq:"10 units",aec:"$30,000–$80,000/yr",lt:"1–2 wks",ndaa:"Yes",note:"Commercial UAV motors; good availability; ships from FL"},
+
+// ── PR-02 ESC ──
+{id:"PR-02",comp:"Electronic Speed Controller (ESC)",cat:"Propulsion",plat:"P1/P2",crit:"High",sup:"Hobbywing Technology",country:"China",cont:"Asia",flag:"🇨🇳",geo:"High",q:5,price:"$45–$280/unit",moq:"10 units",aec:"$40,000–$150,000/yr",lt:"3–7 wks",ndaa:"No",note:"Global market leader; Platinum & XRotor series for UAV; high geo + NDAA risk"},
+{id:"PR-02",comp:"Electronic Speed Controller (ESC)",cat:"Propulsion",plat:"P1/P2",crit:"High",sup:"Castle Creations",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$60–$350/unit",moq:"5 units",aec:"$50,000–$180,000/yr",lt:"1–3 wks",ndaa:"Yes",note:"NDAA-compliant; engineered USA; Talon series for fixed-wing; preferred backup"},
+{id:"PR-02",comp:"Electronic Speed Controller (ESC)",cat:"Propulsion",plat:"P1/P2",crit:"High",sup:"T-Motor (ESC line)",country:"China",cont:"Asia",flag:"🇨🇳",geo:"High",q:5,price:"$40–$220/unit",moq:"10 units",aec:"$35,000–$120,000/yr",lt:"4–8 wks",ndaa:"No",note:"Matched to T-Motor motors; high quality but China-sourced"},
+{id:"PR-02",comp:"Electronic Speed Controller (ESC)",cat:"Propulsion",plat:"P1/P2",crit:"High",sup:"Advanced Power Drives (APD)",country:"UK",cont:"Europe",flag:"🇬🇧",geo:"Low",q:5,price:"$80–$400/unit",moq:"5 units",aec:"$60,000–$200,000/yr",lt:"5–10 wks",ndaa:"Yes",note:"Defence-grade ESCs; high reliability; used in military UAVs; UK-origin"},
+{id:"PR-02",comp:"Electronic Speed Controller (ESC)",cat:"Propulsion",plat:"P1/P2",crit:"High",sup:"Currawong Engineering",country:"Australia",cont:"Oceania",flag:"🇦🇺",geo:"Low",q:5,price:"$150–$500/unit",moq:"5 units",aec:"$80,000–$220,000/yr",lt:"7–12 wks",ndaa:"Yes",note:"Velocity ESC; aerospace-grade; used in BVLOS commercial platforms"},
+{id:"PR-02",comp:"Electronic Speed Controller (ESC)",cat:"Propulsion",plat:"P1/P2",crit:"High",sup:"Embention",country:"Spain",cont:"Europe",flag:"🇪🇸",geo:"Low",q:4,price:"$100–$350/unit",moq:"5 units",aec:"$60,000–$160,000/yr",lt:"8–12 wks",ndaa:"Yes",note:"Industrial UAV ESC + autopilot integration; EU-origin"},
+
+// ── PR-03 Propellers ──
+{id:"PR-03",comp:"Fixed propellers (main)",cat:"Propulsion",plat:"P1/P2",crit:"Med",sup:"KDE Direct (CF Propellers)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$80–$220/pair",moq:"10 pairs",aec:"$20,000–$60,000/yr",lt:"1–2 wks",ndaa:"Yes",note:"CNC-balanced CF propeller blades; UAV-grade; US-made"},
+{id:"PR-03",comp:"Fixed propellers (main)",cat:"Propulsion",plat:"P1/P2",crit:"Med",sup:"T-Motor Propellers",country:"China",cont:"Asia",flag:"🇨🇳",geo:"High",q:5,price:"$25–$90/pair",moq:"20 pairs",aec:"$10,000–$30,000/yr",lt:"4–8 wks",ndaa:"No",note:"High quality; affordable; China geo risk"},
+{id:"PR-03",comp:"Fixed propellers (main)",cat:"Propulsion",plat:"P1/P2",crit:"Med",sup:"APC Propellers",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$15–$60/unit",moq:"20 units",aec:"$8,000–$25,000/yr",lt:"1–2 wks",ndaa:"Yes",note:"Nylon/glass-filled propellers; wide size range; Woodland CA → SF ~1 day"},
+{id:"PR-03",comp:"Fixed propellers (main)",cat:"Propulsion",plat:"P1/P2",crit:"Med",sup:"Mejzlik Propellers",country:"Czech Republic",cont:"Europe",flag:"🇨🇿",geo:"Low",q:5,price:"$40–$120/unit",moq:"10 units",aec:"$12,000–$40,000/yr",lt:"6–10 wks",ndaa:"Yes",note:"Premium CF competition props; European; high performance"},
+
+// ── PW-01 LiPo/Li-ion battery ──
+{id:"PW-01",comp:"LiPo/Li-ion main flight battery",cat:"Power & Energy",plat:"P1/P2",crit:"High",sup:"Grepow / Tattu (Shenzhen)",country:"China",cont:"Asia",flag:"🇨🇳",geo:"High",q:5,price:"$280–$650/pack",moq:"10 units",aec:"$80,000–$200,000/yr",lt:"4–8 wks",ndaa:"No",note:"Market leader UAV LiPo; Tattu Pro series; 600+ cycle life; primary risk: China geo + tariff"},
+{id:"PW-01",comp:"LiPo/Li-ion main flight battery",cat:"Power & Energy",plat:"P1/P2",crit:"High",sup:"MaxAmps Lithium Batteries",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$400–$900/pack",moq:"5 units",aec:"$120,000–$280,000/yr",lt:"1–3 wks",ndaa:"Yes",note:"Hand-assembled USA; serves Boeing, NASA, DoD; NDAA-safe; Spokane WA"},
+{id:"PW-01",comp:"LiPo/Li-ion main flight battery",cat:"Power & Energy",plat:"P1/P2",crit:"High",sup:"Epec Engineered Technologies",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$350–$800/pack custom",moq:"10 units",aec:"$100,000–$250,000/yr",lt:"4–8 wks custom",ndaa:"Yes",note:"Custom UAV battery packs; US-assembled; military program experience"},
+{id:"PW-01",comp:"LiPo/Li-ion main flight battery",cat:"Power & Energy",plat:"P1/P2",crit:"High",sup:"Tianjin Lishen Battery",country:"China",cont:"Asia",flag:"🇨🇳",geo:"High",q:4,price:"$200–$500/pack",moq:"50 units",aec:"$60,000–$180,000/yr",lt:"6–12 wks",ndaa:"No",note:"Large-scale Li-ion cell mfr; custom packs; high geo risk; EV/drone dual use"},
+{id:"PW-01",comp:"LiPo/Li-ion main flight battery",cat:"Power & Energy",plat:"P1/P2",crit:"High",sup:"EaglePicher Technologies",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$600–$1,500/pack",moq:"5 units",aec:"$200,000–$400,000/yr",lt:"8–16 wks",ndaa:"Yes",note:"Aerospace-grade Li batteries; DoD contractor; premium tier; long lead"},
+{id:"PW-01",comp:"LiPo/Li-ion main flight battery",cat:"Power & Energy",plat:"P1/P2",crit:"High",sup:"Kokam (SFC Energy)",country:"South Korea",cont:"Asia",flag:"🇰🇷",geo:"Medium",q:5,price:"$400–$850/pack",moq:"10 units",aec:"$130,000–$300,000/yr",lt:"8–14 wks",ndaa:"Yes",note:"High-energy LiPo cells for UAV; Korea-origin; lower geo risk than China"},
+
+// ── PW-02 BMS ──
+{id:"PW-02",comp:"Battery Management System (BMS)",cat:"Power & Energy",plat:"P1/P2",crit:"High",sup:"Texas Instruments",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$15–$60/IC",moq:"100 units",aec:"$15,000–$50,000/yr",lt:"8–20 wks (chip shortage risk)",ndaa:"Yes",note:"BQ series BMS ICs; widely used; fab risk: semiconductor shortage 2021–23 still echoing"},
+{id:"PW-02",comp:"Battery Management System (BMS)",cat:"Power & Energy",plat:"P1/P2",crit:"High",sup:"Analog Devices (ADI)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$20–$80/IC",moq:"50 units",aec:"$20,000–$60,000/yr",lt:"10–24 wks",ndaa:"Yes",note:"LTC6811 multi-cell BMS; aerospace-grade; long lead during shortages"},
+{id:"PW-02",comp:"Battery Management System (BMS)",cat:"Power & Energy",plat:"P1/P2",crit:"High",sup:"Digi-Key (distributor — TI/ADI)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$18–$75/IC",moq:"1 unit",aec:"$12,000–$40,000/yr",lt:"In-stock to 2 wks",ndaa:"Yes",note:"Distributor with buffer stock; best for spot buying; Thief River Falls MN → SF ~4 days ship"},
+{id:"PW-02",comp:"Battery Management System (BMS)",cat:"Power & Energy",plat:"P1/P2",crit:"High",sup:"Renesas Electronics",country:"Japan",cont:"Asia",flag:"🇯🇵",geo:"Medium",q:5,price:"$12–$55/IC",moq:"100 units",aec:"$10,000–$35,000/yr",lt:"12–20 wks",ndaa:"Yes",note:"ISL943x BMS IC family; Japan fab; good geo diversity from US/China"},
+
+// ── NA-01 GNSS/GPS module ──
+{id:"NA-01",comp:"GNSS / GPS module",cat:"Navigation & Sensing",plat:"P1/P2",crit:"High",sup:"u-blox AG",country:"Switzerland",cont:"Europe",flag:"🇨🇭",geo:"Low",q:5,price:"$35–$280/unit",moq:"10 units",aec:"$30,000–$120,000/yr",lt:"4–12 wks (varies by model)",ndaa:"Yes",note:"ZED-F9P RTK (cm-level); NEO-M9N (0.7m); market-leading drone GNSS; Swiss fab"},
+{id:"NA-01",comp:"GNSS / GPS module",cat:"Navigation & Sensing",plat:"P1/P2",crit:"High",sup:"Trimble (OEM GNSS)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$200–$800/unit",moq:"5 units",aec:"$80,000–$250,000/yr",lt:"6–14 wks",ndaa:"Yes",note:"High-precision GNSS boards; used in commercial UAV survey platforms"},
+{id:"NA-01",comp:"GNSS / GPS module",cat:"Navigation & Sensing",plat:"P1/P2",crit:"High",sup:"Novatel (Hexagon)",country:"Canada",cont:"North America",flag:"🇨🇦",geo:"Low",q:5,price:"$300–$1,200/unit",moq:"5 units",aec:"$100,000–$350,000/yr",lt:"8–16 wks",ndaa:"Yes",note:"OEM-7 series; RTK; used in autonomous vehicles and UAVs; premium tier"},
+{id:"NA-01",comp:"GNSS / GPS module",cat:"Navigation & Sensing",plat:"P1/P2",crit:"High",sup:"Septentrio",country:"Belgium",cont:"Europe",flag:"🇧🇪",geo:"Low",q:5,price:"$400–$1,500/unit",moq:"2 units",aec:"$120,000–$400,000/yr",lt:"8–14 wks",ndaa:"Yes",note:"mosaic-X5 module; anti-jamming/spoofing; BVLOS-grade; used in Zipline-adjacent platforms"},
+{id:"NA-01",comp:"GNSS / GPS module",cat:"Navigation & Sensing",plat:"P1/P2",crit:"High",sup:"Beitian Communication (CUAV distributor)",country:"China",cont:"Asia",flag:"🇨🇳",geo:"High",q:3,price:"$15–$80/unit",moq:"5 units",aec:"$8,000–$25,000/yr",lt:"3–6 wks",ndaa:"No",note:"u-blox chipset reseller; cheap but geo risk + authenticity concerns"},
+{id:"NA-01",comp:"GNSS / GPS module",cat:"Navigation & Sensing",plat:"P1/P2",crit:"High",sup:"Matek Systems",country:"Taiwan",cont:"Asia",flag:"🇹🇼",geo:"Medium",q:4,price:"$25–$90/unit",moq:"10 units",aec:"$12,000–$40,000/yr",lt:"3–6 wks",ndaa:"Yes",note:"SAM-M10Q & M9N-based modules; good quality/price; Taiwan-origin"},
+
+// ── NA-02 Computer vision sensor ──
+{id:"NA-02",comp:"Computer vision / optical sensor",cat:"Navigation & Sensing",plat:"P2",crit:"High",sup:"Sony Semiconductor Solutions",country:"Japan",cont:"Asia",flag:"🇯🇵",geo:"Medium",q:5,price:"$40–$200/sensor",moq:"50 units",aec:"$40,000–$150,000/yr",lt:"10–20 wks",ndaa:"Yes",note:"IMX series CMOS sensors; gold standard for UAV vision; design-in lead is long"},
+{id:"NA-02",comp:"Computer vision / optical sensor",cat:"Navigation & Sensing",plat:"P2",crit:"High",sup:"OmniVision Technologies",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$15–$100/sensor",moq:"100 units",aec:"$30,000–$100,000/yr",lt:"14–26 wks",ndaa:"Yes",note:"OV series CMOS; widely used; fab in Taiwan; semiconductor lead risk"},
+{id:"NA-02",comp:"Computer vision / optical sensor",cat:"Navigation & Sensing",plat:"P2",crit:"High",sup:"ON Semiconductor (onsemi)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$20–$120/sensor",moq:"50 units",aec:"$35,000–$110,000/yr",lt:"16–28 wks",ndaa:"Yes",note:"AR0234 global shutter; used in UAV obstacle avoidance"},
+{id:"NA-02",comp:"Computer vision / optical sensor",cat:"Navigation & Sensing",plat:"P2",crit:"High",sup:"Teledyne FLIR",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$200–$800/unit",moq:"5 units",aec:"$80,000–$300,000/yr",lt:"8–16 wks",ndaa:"Yes",note:"Boson thermal + visible sensors; used in delivery drone obstacle detection"},
+
+// ── NA-03 Obstacle avoidance ──
+{id:"NA-03",comp:"Obstacle avoidance sensor",cat:"Navigation & Sensing",plat:"P1/P2",crit:"High",sup:"Garmin LiDAR-Lite (Acuity)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$130–$250/unit",moq:"10 units",aec:"$25,000–$80,000/yr",lt:"2–4 wks",ndaa:"Yes",note:"LiDAR-Lite v3/v4; popular UAV rangefinder; good availability"},
+{id:"NA-03",comp:"Obstacle avoidance sensor",cat:"Navigation & Sensing",plat:"P1/P2",crit:"High",sup:"Benewake (TF-series LiDAR)",country:"China",cont:"Asia",flag:"🇨🇳",geo:"High",q:4,price:"$60–$250/unit",moq:"10 units",aec:"$15,000–$60,000/yr",lt:"4–8 wks",ndaa:"No",note:"TFmini/TFLuna widely adopted; low cost; high geo risk"},
+{id:"NA-03",comp:"Obstacle avoidance sensor",cat:"Navigation & Sensing",plat:"P1/P2",crit:"High",sup:"Leddartech",country:"Canada",cont:"North America",flag:"🇨🇦",geo:"Low",q:5,price:"$200–$600/unit",moq:"5 units",aec:"$60,000–$200,000/yr",lt:"8–14 wks",ndaa:"Yes",note:"Pixell solid-state LiDAR; automotive + UAV; Canada-origin"},
+{id:"NA-03",comp:"Obstacle avoidance sensor",cat:"Navigation & Sensing",plat:"P1/P2",crit:"High",sup:"Ouster (Lidar — now Sense)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$3,000–$8,000/unit",moq:"1 unit",aec:"$100,000–$300,000/yr",lt:"8–16 wks",ndaa:"Yes",note:"OS0 series; high-end 3D lidar; premium; used in autonomous delivery"},
+
+// ── CM-01 LTE modem ──
+{id:"CM-01",comp:"LTE / 4G cellular modem",cat:"Communication",plat:"P1/P2",crit:"High",sup:"Sierra Wireless (Semtech)",country:"Canada",cont:"North America",flag:"🇨🇦",geo:"Low",q:5,price:"$80–$250/module",moq:"10 units",aec:"$25,000–$90,000/yr",lt:"6–16 wks",ndaa:"Yes",note:"RV55 / EM919x LTE Cat 12; widely used in BVLOS UAV C2 links"},
+{id:"CM-01",comp:"LTE / 4G cellular modem",cat:"Communication",plat:"P1/P2",crit:"High",sup:"Telit Cinterion",country:"UK",cont:"Europe",flag:"🇬🇧",geo:"Low",q:4,price:"$60–$200/module",moq:"10 units",aec:"$20,000–$70,000/yr",lt:"8–14 wks",ndaa:"Yes",note:"LM940 LTE-A module; used in UAV telemetry; UK-origin"},
+{id:"CM-01",comp:"LTE / 4G cellular modem",cat:"Communication",plat:"P1/P2",crit:"High",sup:"u-blox (SARA-R4 / LARA-R6)",country:"Switzerland",cont:"Europe",flag:"🇨🇭",geo:"Low",q:5,price:"$45–$150/module",moq:"50 units",aec:"$20,000–$65,000/yr",lt:"8–18 wks",ndaa:"Yes",note:"LTE-M/NB-IoT + Cat 1; compact UAV form factor; Swiss design"},
+{id:"CM-01",comp:"LTE / 4G cellular modem",cat:"Communication",plat:"P1/P2",crit:"High",sup:"Quectel Wireless",country:"China",cont:"Asia",flag:"🇨🇳",geo:"High",q:4,price:"$25–$100/module",moq:"50 units",aec:"$10,000–$35,000/yr",lt:"4–10 wks",ndaa:"No",note:"EC21/EC25 LTE modules; very low cost; high geo risk; NDAA concern"},
+{id:"CM-01",comp:"LTE / 4G cellular modem",cat:"Communication",plat:"P1/P2",crit:"High",sup:"SkyWave (Iridium ecosystem)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$200–$500/module",moq:"5 units",aec:"$40,000–$150,000/yr",lt:"4–10 wks",ndaa:"Yes",note:"Satellite backup to LTE for remote ops; adds resilience"},
+
+// ── CM-02 RF telemetry ──
+{id:"CM-02",comp:"RF telemetry module",cat:"Communication",plat:"P1/P2",crit:"High",sup:"Microhard Systems",country:"Canada",cont:"North America",flag:"🇨🇦",geo:"Low",q:5,price:"$150–$600/unit",moq:"5 units",aec:"$30,000–$120,000/yr",lt:"4–10 wks",ndaa:"Yes",note:"pDDL900 / n920 series; UAV datalink standard; BVLOS proven"},
+{id:"CM-02",comp:"RF telemetry module",cat:"Communication",plat:"P1/P2",crit:"High",sup:"FreeWave Technologies",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$200–$800/unit",moq:"5 units",aec:"$40,000–$150,000/yr",lt:"4–10 wks",ndaa:"Yes",note:"900 MHz FHSS; used in BVLOS military and commercial drones; CO-based"},
+{id:"CM-02",comp:"RF telemetry module",cat:"Communication",plat:"P1/P2",crit:"High",sup:"RFD (RFDesign Pty)",country:"Australia",cont:"Oceania",flag:"🇦🇺",geo:"Low",q:4,price:"$80–$300/unit",moq:"5 units",aec:"$20,000–$80,000/yr",lt:"5–10 wks",ndaa:"Yes",note:"RFD900x; popular MAVLink telemetry radio; 40km+ range"},
+{id:"CM-02",comp:"RF telemetry module",cat:"Communication",plat:"P1/P2",crit:"High",sup:"Digi International (XBee)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$40–$180/unit",moq:"10 units",aec:"$12,000–$50,000/yr",lt:"2–6 wks",ndaa:"Yes",note:"XBee 900HP; reliable mesh-capable; lower bandwidth but robust"},
+
+// ── CM-04 ADS-B ──
+{id:"CM-04",comp:"ADS-B transponder",cat:"Communication",plat:"P1/P2",crit:"High",sup:"uAvionix",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$200–$800/unit",moq:"5 units",aec:"$40,000–$180,000/yr",lt:"In-stock to 4 wks",ndaa:"Yes",note:"ping200XR (TSO-certified); #1 UAV ADS-B brand; FAA-approved BVLOS; Bozeman MT"},
+{id:"CM-04",comp:"ADS-B transponder",cat:"Communication",plat:"P1/P2",crit:"High",sup:"Sagetech Avionics",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$800–$2,500/unit",moq:"2 units",aec:"$80,000–$300,000/yr",lt:"4–12 wks",ndaa:"Yes",note:"MXS/XP series; FAA TSO-certified; 1.5M+ mission hours; Bingen WA"},
+{id:"CM-04",comp:"ADS-B transponder",cat:"Communication",plat:"P1/P2",crit:"High",sup:"Aerobits",country:"Poland",cont:"Europe",flag:"🇵🇱",geo:"Low",q:4,price:"$150–$600/unit",moq:"5 units",aec:"$30,000–$120,000/yr",lt:"6–12 wks",ndaa:"Yes",note:"TT-SC1 ADS-B; SWaP optimized; EU-origin; growing UAV market share"},
+
+// ── AV-01 Flight Controller ──
+{id:"AV-01",comp:"Flight controller / autopilot unit",cat:"Avionics & Flight Control",plat:"P1/P2",crit:"High",sup:"Cubic Defense (custom MCU integration)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$500–$2,000/unit",moq:"5 units",aec:"$100,000–$400,000/yr",lt:"12–24 wks",ndaa:"Yes",note:"Custom FC for commercial BVLOS; integrators for Zipline-class systems"},
+{id:"AV-01",comp:"Flight controller / autopilot unit",cat:"Avionics & Flight Control",plat:"P1/P2",crit:"High",sup:"Auterion (Skynode)",country:"Switzerland",cont:"Europe",flag:"🇨🇭",geo:"Low",q:5,price:"$800–$2,500/unit",moq:"5 units",aec:"$120,000–$450,000/yr",lt:"8–16 wks",ndaa:"Yes",note:"Enterprise autopilot platform; used in delivery drones; PX4-based"},
+{id:"AV-01",comp:"Flight controller / autopilot unit",cat:"Avionics & Flight Control",plat:"P1/P2",crit:"High",sup:"Holybro (Pixhawk 6X OEM)",country:"China",cont:"Asia",flag:"🇨🇳",geo:"High",q:4,price:"$200–$500/unit",moq:"5 units",aec:"$40,000–$120,000/yr",lt:"3–7 wks",ndaa:"No",note:"Pixhawk-standard FC; good quality; but China-sourced; NDAA risk"},
+{id:"AV-01",comp:"Flight controller / autopilot unit",cat:"Avionics & Flight Control",plat:"P1/P2",crit:"High",sup:"Embention Veronte",country:"Spain",cont:"Europe",flag:"🇪🇸",geo:"Low",q:5,price:"$2,000–$6,000/unit",moq:"2 units",aec:"$200,000–$600,000/yr",lt:"12–20 wks",ndaa:"Yes",note:"DO-178C certifiable autopilot; used in commercial delivery UAVs; EU"},
+{id:"AV-01",comp:"Flight controller / autopilot unit",cat:"Avionics & Flight Control",plat:"P1/P2",crit:"High",sup:"Micropilot Inc.",country:"Canada",cont:"North America",flag:"🇨🇦",geo:"Low",q:5,price:"$3,000–$8,000/unit",moq:"2 units",aec:"$200,000–$800,000/yr",lt:"10–18 wks",ndaa:"Yes",note:"MP2128LRC; hardened autopilot for commercial/defense BVLOS platforms"},
+
+// ── AV-02 IMU ──
+{id:"AV-02",comp:"Inertial Measurement Unit (IMU)",cat:"Avionics & Flight Control",plat:"P1/P2",crit:"High",sup:"InvenSense (TDK)",country:"Japan",cont:"Asia",flag:"🇯🇵",geo:"Medium",q:5,price:"$8–$35/IC",moq:"100 units",aec:"$12,000–$40,000/yr",lt:"12–24 wks",ndaa:"Yes",note:"ICM-42688 6-axis; most common UAV IMU; TDK-Japan fab"},
+{id:"AV-02",comp:"Inertial Measurement Unit (IMU)",cat:"Avionics & Flight Control",plat:"P1/P2",crit:"High",sup:"Bosch Sensortec",country:"Germany",cont:"Europe",flag:"🇩🇪",geo:"Low",q:5,price:"$5–$25/IC",moq:"100 units",aec:"$8,000–$30,000/yr",lt:"10–20 wks",ndaa:"Yes",note:"BMI088/270; vibration-robust; UAV autopilot standard"},
+{id:"AV-02",comp:"Inertial Measurement Unit (IMU)",cat:"Avionics & Flight Control",plat:"P1/P2",crit:"High",sup:"STMicroelectronics",country:"Switzerland",cont:"Europe",flag:"🇨🇭",geo:"Low",q:5,price:"$4–$20/IC",moq:"100 units",aec:"$6,000–$25,000/yr",lt:"10–22 wks",ndaa:"Yes",note:"LSM6DSO/ISM330; widely used in Pixhawk-class FCs; fab Switzerland/Italy"},
+{id:"AV-02",comp:"Inertial Measurement Unit (IMU)",cat:"Avionics & Flight Control",plat:"P1/P2",crit:"High",sup:"Analog Devices (ADIS series)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$200–$800/unit tactical grade",moq:"5 units",aec:"$50,000–$200,000/yr",lt:"16–30 wks",ndaa:"Yes",note:"ADIS16505; tactical-grade IMU; used in commercial BVLOS and defense UAVs"},
+
+// ── AV-06 Processor/MCU ──
+{id:"AV-06",comp:"Processor / microcontroller (MCU)",cat:"Avionics & Flight Control",plat:"P1/P2",crit:"High",sup:"Texas Instruments (Hercules)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$20–$80/unit",moq:"50 units",aec:"$15,000–$50,000/yr",lt:"16–40 wks (shortage risk)",ndaa:"Yes",note:"TMS570 Hercules ASIL-D; confirmed in Zipline FC per EFC source; critical semiconductor"},
+{id:"AV-06",comp:"Processor / microcontroller (MCU)",cat:"Avionics & Flight Control",plat:"P1/P2",crit:"High",sup:"Microchip Technology (Atmel heritage)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$10–$50/unit",moq:"50 units",aec:"$10,000–$40,000/yr",lt:"14–36 wks (shortage risk)",ndaa:"Yes",note:"SAM E/V series; Atmel AT32 confirmed in Zipline; shortage-prone during 2021-23"},
+{id:"AV-06",comp:"Processor / microcontroller (MCU)",cat:"Avionics & Flight Control",plat:"P1/P2",crit:"High",sup:"STMicroelectronics (STM32)",country:"Switzerland",cont:"Europe",flag:"🇨🇭",geo:"Low",q:5,price:"$5–$30/unit",moq:"100 units",aec:"$8,000–$30,000/yr",lt:"12–30 wks",ndaa:"Yes",note:"STM32H7/F4; most common UAV FC MCU; fab EU/Singapore"},
+{id:"AV-06",comp:"Processor / microcontroller (MCU)",cat:"Avionics & Flight Control",plat:"P1/P2",crit:"High",sup:"NXP Semiconductors",country:"Netherlands",cont:"Europe",flag:"🇳🇱",geo:"Low",q:5,price:"$8–$40/unit",moq:"50 units",aec:"$10,000–$35,000/yr",lt:"14–32 wks",ndaa:"Yes",note:"i.MX RT crossover; S32 series; EU-origin; fab in various geographies"},
+
+// ── PL-01 Payload bay ──
+{id:"PL-01",comp:"Payload bay / cargo compartment",cat:"Payload & Delivery",plat:"P1/P2",crit:"Med",sup:"Pelican Products",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$30–$120/unit",moq:"50 units",aec:"$15,000–$50,000/yr",lt:"1–3 wks",ndaa:"Yes",note:"Custom-cut foam insert for medical payload; Torrance CA → SF same-day possible"},
+{id:"PL-01",comp:"Payload bay / cargo compartment",cat:"Payload & Delivery",plat:"P1/P2",crit:"Med",sup:"Cryopak (Phase change inserts)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$8–$40/insert",moq:"100 units",aec:"$10,000–$30,000/yr",lt:"1–2 wks",ndaa:"Yes",note:"PCM cold chain inserts for vaccine/blood delivery; key Zipline cold chain enabler"},
+{id:"PL-01",comp:"Payload bay / cargo compartment",cat:"Payload & Delivery",plat:"P1/P2",crit:"Med",sup:"Sonoco ThermoSafe",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$15–$60/unit",moq:"50 units",aec:"$15,000–$50,000/yr",lt:"2–4 wks",ndaa:"Yes",note:"Pharmaceutical-grade thermal packaging; used in blood logistics globally"},
+
+// ── PL-02 Parachute release mechanism ──
+{id:"PL-02",comp:"Parachute release mechanism (P1)",cat:"Payload & Delivery",plat:"P1",crit:"High",sup:"Fruity Chutes",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$80–$400/assembly",moq:"10 units",aec:"$20,000–$80,000/yr",lt:"1–3 wks",ndaa:"Yes",note:"UAV-grade parachutes + release hardware; Sacramento CA → SF ~1.5 hrs"},
+{id:"PL-02",comp:"Parachute release mechanism (P1)",cat:"Payload & Delivery",plat:"P1",crit:"High",sup:"Butler Parachute Systems",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$200–$800/assembly",moq:"5 units",aec:"$40,000–$150,000/yr",lt:"4–10 wks",ndaa:"Yes",note:"Defense-grade parachute systems; higher reliability tier"},
+{id:"PL-02",comp:"Parachute release mechanism (P1)",cat:"Payload & Delivery",plat:"P1",crit:"High",sup:"Indemnis (Nexus parachute)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$500–$2,000/system",moq:"5 units",aec:"$80,000–$300,000/yr",lt:"6–14 wks",ndaa:"Yes",note:"FAA-accepted UAV ballistic parachute; Anchorage AK; used in drone delivery safety"},
+
+// ── PL-03 Winch/tether ──
+{id:"PL-03",comp:"Winch / tether system (P2)",cat:"Payload & Delivery",plat:"P2",crit:"High",sup:"Maxon Motor AG",country:"Switzerland",cont:"Europe",flag:"🇨🇭",geo:"Low",q:5,price:"$400–$1,500/motor+gearbox",moq:"5 units",aec:"$80,000–$280,000/yr",lt:"8–16 wks",ndaa:"Yes",note:"Precision DC motors for winch actuation; aerospace-qualified; Swiss precision"},
+{id:"PL-03",comp:"Winch / tether system (P2)",cat:"Payload & Delivery",plat:"P2",crit:"High",sup:"Faulhaber Group",country:"Germany",cont:"Europe",flag:"🇩🇪",geo:"Low",q:5,price:"$300–$1,200/unit",moq:"5 units",aec:"$70,000–$250,000/yr",lt:"10–18 wks",ndaa:"Yes",note:"Micro DC motors + gearheads; UAV payload winch; German precision"},
+{id:"PL-03",comp:"Winch / tether system (P2)",cat:"Payload & Delivery",plat:"P2",crit:"High",sup:"Allied Motion (Allient)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$350–$1,300/unit",moq:"5 units",aec:"$75,000–$260,000/yr",lt:"10–20 wks",ndaa:"Yes",note:"Precision brushless motors for UAV actuation; US-made; defense-grade"},
+
+// ── SF-01 Emergency parachute ──
+{id:"SF-01",comp:"Emergency parachute system",cat:"Safety & Redundancy",plat:"P1/P2",crit:"High",sup:"Indemnis",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$500–$2,000/system",moq:"5 units",aec:"$80,000–$300,000/yr",lt:"6–14 wks",ndaa:"Yes",note:"Nexus ballistic parachute; FAA-accepted for BVLOS; Zipline-class drones"},
+{id:"SF-01",comp:"Emergency parachute system",cat:"Safety & Redundancy",plat:"P1/P2",crit:"High",sup:"Fruity Chutes",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:4,price:"$150–$600/system",moq:"10 units",aec:"$30,000–$100,000/yr",lt:"1–4 wks",ndaa:"Yes",note:"UAV recovery parachute systems; fast delivery; CA-based"},
+{id:"SF-01",comp:"Emergency parachute system",cat:"Safety & Redundancy",plat:"P1/P2",crit:"High",sup:"Drone Rescue Systems",country:"Austria",cont:"Europe",flag:"🇦🇹",geo:"Low",q:5,price:"$800–$2,500/system",moq:"2 units",aec:"$100,000–$350,000/yr",lt:"8–16 wks",ndaa:"Yes",note:"DRS-M600 parachute; used in commercial delivery drones; EU-certified"},
+
+// ── GS-01 Pneumatic launch rail ──
+{id:"GS-01",comp:"Pneumatic launch rail / catapult",cat:"Ground Support",plat:"P1",crit:"High",sup:"Robonic Ltd",country:"Finland",cont:"Europe",flag:"🇫🇮",geo:"Low",q:5,price:"$20,000–$80,000/system",moq:"1 unit",aec:"$50,000–$200,000/yr",lt:"12–24 wks",ndaa:"Yes",note:"Pneumatic UAV launcher systems; military & commercial BVLOS; Finland"},
+{id:"GS-01",comp:"Pneumatic launch rail / catapult",cat:"Ground Support",plat:"P1",crit:"High",sup:"UAV Factory",country:"Latvia",cont:"Europe",flag:"🇱🇻",geo:"Low",q:4,price:"$15,000–$60,000/system",moq:"1 unit",aec:"$30,000–$150,000/yr",lt:"16–28 wks",ndaa:"Yes",note:"Penguin C launcher; fixed-wing UAV catapult; EU-based"},
+{id:"GS-01",comp:"Pneumatic launch rail / catapult",cat:"Ground Support",plat:"P1",crit:"High",sup:"JATO Dynamics (custom)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$25,000–$100,000/system custom",moq:"1 unit",aec:"$50,000–$250,000/yr",lt:"16–32 wks",ndaa:"Yes",note:"Custom pneumatic/bungee launch systems for commercial UAV OEMs"},
+
+// ── GS-03 Ground control server ──
+{id:"GS-03",comp:"Ground control server / software",cat:"Ground Support",plat:"P1/P2",crit:"High",sup:"Dell Technologies (server hardware)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$3,000–$15,000/server",moq:"1 unit",aec:"$20,000–$80,000/yr",lt:"2–6 wks",ndaa:"Yes",note:"Edge servers for distribution center GCS; redundant rack hardware"},
+{id:"GS-03",comp:"Ground control server / software",cat:"Ground Support",plat:"P1/P2",crit:"High",sup:"Hewlett Packard Enterprise",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$4,000–$20,000/server",moq:"1 unit",aec:"$25,000–$100,000/yr",lt:"3–8 wks",ndaa:"Yes",note:"HPE ProLiant edge servers; ruggedized options for field deployment"},
+{id:"GS-03",comp:"Ground control server / software",cat:"Ground Support",plat:"P1/P2",crit:"High",sup:"Cisco Systems (networking)",country:"USA",cont:"North America",flag:"🇺🇸",geo:"Low",q:5,price:"$2,000–$10,000/unit",moq:"2 units",aec:"$15,000–$60,000/yr",lt:"4–12 wks",ndaa:"Yes",note:"Network switches for GCS redundancy; US-origin critical infrastructure"},
+];
+
+let sorted=D.slice();let sortCol=null;let sortDir=1;
+
+function stars(q){return "★".repeat(q)+"☆".repeat(5-q)}
+function geoClass(g){return g==="High"?"geo-h":g==="Medium"?"geo-m":"geo-l"}
+function critClass(c){return c==="High"?"crit-h":c==="Med"?"crit-m":"crit-l"}
+
+function applyFilters(){
+  const s=document.getElementById("search").value.toLowerCase();
+  const cf=document.getElementById("catF").value;
+  const cr=document.getElementById("critF").value;
+  const gf=document.getElementById("geoF").value;
+  const pf=document.getElementById("platF").value;
+  let rows=D.filter(r=>{
+    if(s && !([r.comp,r.sup,r.country,r.cat,r.note].join(" ").toLowerCase().includes(s)))return false;
+    if(cf && r.cat!==cf)return false;
+    if(cr && r.crit!==cr)return false;
+    if(gf && r.geo!==gf)return false;
+    if(pf==="P1" && !r.plat.includes("P1"))return false;
+    if(pf==="P2" && !r.plat.includes("P2"))return false;
+    return true;
+  });
+  renderRows(rows);
+}
+
+function renderRows(rows){
+  const tbody=document.getElementById("tbody");
+  tbody.innerHTML=rows.map(r=>`
+    <tr>
+      <td class="comp-id">${r.id}</td>
+      <td class="comp-name">${r.comp}</td>
+      <td><span style="font-size:10px;color:var(--color-text-secondary)">${r.cat}</span></td>
+      <td><span class="platform-chip">${r.plat}</span></td>
+      <td class="sup-name">${r.flag} ${r.sup}</td>
+      <td class="country-cell">${r.country}</td>
+      <td style="font-size:10px;color:var(--color-text-secondary)">${r.cont}</td>
+      <td><span class="badge ${geoClass(r.geo)}">${r.geo}</span></td>
+      <td><span class="stars">${stars(r.q)}</span></td>
+      <td style="white-space:nowrap;font-size:11px">${r.price}</td>
+      <td style="white-space:nowrap;font-size:11px">${r.moq}</td>
+      <td style="white-space:nowrap;font-size:11px">${r.aec}</td>
+      <td style="white-space:nowrap;font-size:11px">${r.lt}</td>
+      <td style="font-size:11px;font-weight:500;color:${r.ndaa==="Yes"?"var(--color-text-success)":"var(--color-text-danger)"}">${r.ndaa}</td>
+      <td class="note-cell">${r.note}</td>
+    </tr>
+  `).join("");
+
+  const countries=new Set(rows.map(r=>r.country)).size;
+  const highgeo=rows.filter(r=>r.geo==="High").length;
+  const us=rows.filter(r=>r.country==="USA").length;
+  const comps=new Set(rows.map(r=>r.id)).size;
+  document.getElementById("st-rows").textContent=rows.length;
+  document.getElementById("st-comps").textContent=comps;
+  document.getElementById("st-countries").textContent=countries;
+  document.getElementById("st-highgeo").textContent=highgeo;
+  document.getElementById("st-us").textContent=us;
+  document.getElementById("footer").textContent=`Showing ${rows.length} of ${D.length} supplier rows · ${comps} components · Lead times are ship time to San Francisco, CA · Pricing = market proxy from Digi-Key, Mouser, manufacturer websites, and industry reports. Annual contract estimates assume 500-unit drone fleet. Data accurate as of 2025–2026.`;
+}
+
+renderRows(D);
+</script>

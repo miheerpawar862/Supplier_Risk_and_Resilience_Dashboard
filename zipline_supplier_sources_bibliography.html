@@ -1,0 +1,631 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,sans-serif);font-size:13px}
+
+.header{padding:1rem 1.25rem 0.75rem;border-bottom:0.5px solid var(--color-border-tertiary)}
+.header-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+.title{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.subtitle{font-size:11px;color:var(--color-text-secondary)}
+.badge{font-size:10px;font-weight:500;padding:3px 9px;border-radius:20px;background:var(--color-background-info);color:var(--color-text-info)}
+
+.tabs{display:flex;gap:0;border-bottom:0.5px solid var(--color-border-tertiary);overflow-x:auto}
+.tab{padding:8px 16px;font-size:12px;font-weight:500;color:var(--color-text-secondary);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.tab:hover{color:var(--color-text-primary)}
+.tab.active{color:var(--color-text-primary);border-bottom-color:var(--color-text-primary)}
+
+.content{padding:0 0 1rem}
+
+.section{margin:0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.section-header{padding:10px 1.25rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.section-header:hover{background:var(--color-background-secondary)}
+.section-title{font-size:12px;font-weight:500;color:var(--color-text-primary);display:flex;align-items:center;gap:8px}
+.section-count{font-size:10px;color:var(--color-text-secondary)}
+.chevron{font-size:10px;color:var(--color-text-secondary);transition:transform .2s}
+.chevron.open{transform:rotate(90deg)}
+.section-body{display:none;padding:0 1.25rem 12px}
+.section-body.open{display:block}
+
+.source-card{background:var(--color-background-secondary);border-radius:8px;padding:10px 12px;margin-bottom:8px;border:0.5px solid var(--color-border-tertiary)}
+.source-name{font-weight:500;font-size:12px;color:var(--color-text-primary);margin-bottom:2px}
+.source-url{font-size:11px;color:var(--color-text-info);margin-bottom:5px;word-break:break-all}
+.source-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:5px}
+.meta-chip{font-size:10px;padding:2px 7px;border-radius:10px;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary)}
+.source-used{font-size:11px;color:var(--color-text-secondary);line-height:1.5}
+.source-used strong{color:var(--color-text-primary);font-weight:500}
+.source-how{font-size:10px;color:var(--color-text-secondary);margin-top:4px;padding-top:4px;border-top:0.5px solid var(--color-border-tertiary)}
+
+.cat-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+
+.legend{display:flex;flex-wrap:wrap;gap:10px;padding:8px 1.25rem;border-bottom:0.5px solid var(--color-border-tertiary)}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--color-text-secondary)}
+
+.assumption-box{background:var(--color-background-warning,#FAEEDA);border:0.5px solid var(--color-border-warning,#EF9F27);border-radius:8px;padding:10px 12px;margin:10px 1.25rem;font-size:11px;color:var(--color-text-warning,#633806);line-height:1.6}
+.assumption-box strong{font-weight:500}
+</style>
+
+<div class="header">
+  <div class="header-top">
+    <span class="title">Source Bibliography — Zipline Supplier Intelligence</span>
+    <span class="badge">Phase 1 · Data Provenance</span>
+  </div>
+  <div class="subtitle">All sources used to build the component list and supplier database · Organized by source type · For Excel Assumptions Tab</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('all')">All Sources</div>
+  <div class="tab" onclick="switchTab('product')">Product / Technical</div>
+  <div class="tab" onclick="switchTab('supplier')">Supplier Directories</div>
+  <div class="tab" onclick="switchTab('distributor')">Distributor / Pricing</div>
+  <div class="tab" onclick="switchTab('market')">Market Research</div>
+  <div class="tab" onclick="switchTab('regulatory')">Regulatory / Geo Risk</div>
+  <div class="tab" onclick="switchTab('assumption')">Assumptions & Caveats</div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><span class="cat-dot" style="background:#534AB7"></span> Product / Technical</div>
+  <div class="legend-item"><span class="cat-dot" style="background:#0F6E56"></span> Supplier Directory</div>
+  <div class="legend-item"><span class="cat-dot" style="background:#854F0B"></span> Distributor / Pricing</div>
+  <div class="legend-item"><span class="cat-dot" style="background:#185FA5"></span> Market Research</div>
+  <div class="legend-item"><span class="cat-dot" style="background:#993C1D"></span> Regulatory / Geo Risk</div>
+</div>
+
+<div class="content" id="content"></div>
+
+<script>
+const SOURCES = [
+  {
+    type:"product",
+    category:"Zipline Platform — Technical Documentation",
+    color:"#534AB7",
+    sources:[
+      {
+        name:"Engineering For Change — Zipline Drone Technical Profile",
+        url:"https://www.engineeringforchange.org/solutions/product/zipline-drone-medical-delivery-service/",
+        tags:["Free","No login","Primary technical source"],
+        used:"Confirmed: Hercules + Atmel processors, Micrium RTOS, dual interchangeable batteries, Kevlar fuselage, pneumatic launch, ~10kg drone weight, redundant flight hardware on both drone and ground servers.",
+        how:"Search 'Zipline drone engineering for change' — directly accessible, no paywall."
+      },
+      {
+        name:"Zipline Wikipedia — Platform 1 & 2 Specifications",
+        url:"https://en.wikipedia.org/wiki/Zipline_(drone_delivery_company)",
+        tags:["Free","No login"],
+        used:"Platform 1: 44 lb / 20 kg, 1.75 kg payload, 300 km max range, 11 ft wingspan, 2 propellers, carbon-fiber frame, EPS shell, quick-swap battery. Platform 2: VTOL hybrid + Droid sub-vehicle.",
+        how:"Direct Wikipedia search — always up to date; cited sources are often the real primary docs."
+      },
+      {
+        name:"IEEE Spectrum — How Zipline Designed Its Droid Delivery System",
+        url:"https://spectrum.ieee.org/delivery-drone-zipline-design",
+        tags:["Free","No login","Engineering depth"],
+        used:"Platform 2 Droid architecture: tether winch, visual sensors, multi-axis thrusters, 300 ft hover altitude, 16 km service radius, 2.5–3.5 kg payload, 112 km/h cruise speed.",
+        how:"Search 'Zipline Platform 2 IEEE Spectrum' — IEEE Spectrum articles are free to read without subscription."
+      },
+      {
+        name:"IEEE Spectrum — Zipline Adds Rappelling Droid",
+        url:"https://spectrum.ieee.org/zipline-drone-delivery",
+        tags:["Free","No login"],
+        used:"Droid descent mechanism, tether length control, obstacle avoidance during delivery sequence, initial P2 announcement details.",
+        how:"Same IEEE Spectrum search — original P2 announcement article from March 2023."
+      },
+      {
+        name:"DroneXL / MKBHD Analysis — Zipline Platform 2 Deep Dive",
+        url:"https://dronexl.co/2025/03/26/ziplines-drone-delivery-revolution-mkbhd/",
+        tags:["Free","No login"],
+        used:"500 safety checks/second, zero human incidents in 100M miles, dual propeller redundancy, styrofoam + carbon-fiber wing weight design, waterproofing, 70 mph cruise.",
+        how:"Search 'Zipline MKBHD drone delivery 2025' — YouTube analysis transcribed into article form."
+      },
+      {
+        name:"Robots Guide — Zipline Technical Entry",
+        url:"https://robotsguide.com/robots/zipline",
+        tags:["Free","No login"],
+        used:"P2 payload capacity 1.75 kg; 160 km round trip range; original Rwanda deployment context.",
+        how:"Search 'Zipline drone robots guide' — curated technical robotics database."
+      }
+    ]
+  },
+  {
+    type:"product",
+    category:"Fixed-Wing Drone Engineering — General Components",
+    color:"#534AB7",
+    sources:[
+      {
+        name:"GAO Tek — Components of Fixed-Wing Drones",
+        url:"https://gaotek.com/components-of-fixed-wing-drones/",
+        tags:["Free","No login","Component taxonomy"],
+        used:"Complete component taxonomy for fixed-wing drones: fuselage, wings, tail assembly, motors, ESCs, propellers, ailerons, elevators, rudder, GPS, IMU, barometer, telemetry, servos, pushrods, LiPo battery, autopilot software.",
+        how:"Search 'fixed wing drone components list site:gaotek.com' — comprehensive engineering reference."
+      },
+      {
+        name:"GAO Tek — Components of Fixed-Wing Hybrid VTOL Drones",
+        url:"https://gaotek.com/components-of-fixed-wing-hybrid-vtol-drones/",
+        tags:["Free","No login"],
+        used:"VTOL-specific additions: articulating VTOL lift motors, compass, ESC-per-motor architecture, IMU for hover-to-cruise transition, forward thrust propulsion.",
+        how:"Same GAO Tek site — VTOL-specific reference used for P2 Zip components."
+      },
+      {
+        name:"PX4 Documentation — Basic Concepts",
+        url:"https://docs.px4.io/main/en/getting_started/px4_basic_concepts.html",
+        tags:["Free","No login","Engineering specification"],
+        used:"Flight controller architecture, ESC signal protocol, sensor stack (IMU, barometer, airspeed, rangefinder, optical flow), parachute integration, DroneCAN protocol.",
+        how:"Directly accessible PX4 open-source autopilot documentation — industry standard reference."
+      },
+      {
+        name:"ArduPilot — Connect ESCs and Motors",
+        url:"https://ardupilot.org/copter/docs/connect-escs-and-motors.html",
+        tags:["Free","No login"],
+        used:"ESC-to-autopilot wiring architecture, PWM vs CAN bus signal protocols, motor redundancy configurations.",
+        how:"ArduPilot open-source documentation — free and comprehensive."
+      },
+      {
+        name:"Beyond Sky — Essential Drone Parts Guide",
+        url:"https://beyondsky.xyz/blog/hardware/essential-drone-parts-a-comprehensive-guide-to-uav-components",
+        tags:["Free","No login"],
+        used:"Battery C-rating and voltage matching, power distribution board architecture, navigation module specs, transmitter/receiver channel requirements.",
+        how:"Search 'drone components complete guide' — well-structured engineering overview."
+      }
+    ]
+  },
+  {
+    type:"supplier",
+    category:"Motor & ESC Suppliers",
+    color:"#0F6E56",
+    sources:[
+      {
+        name:"KDE Direct — Official Website",
+        url:"https://www.kdedirect.com/pages/brushless-motors",
+        tags:["Free","Direct supplier","NDAA-compliant"],
+        used:"KDE Direct confirmed as US-based UAV motor manufacturer. IP56 rating, industrial-grade motors, used in Africa medical delivery (consistent with Zipline use case). Pricing cross-referenced with product pages.",
+        how:"Direct website — pricing visible on product pages without login."
+      },
+      {
+        name:"T-Motor — Official Store",
+        url:"https://store.tmotor.com/",
+        tags:["Free","Direct supplier","China-based"],
+        used:"T-Motor as global market leader for drone motors and ESCs. Nanchang, China headquarters. 300,000+ global users confirmed. Product pricing range visible on store pages.",
+        how:"Direct website — pricing publicly listed. Note: orders require account for volume pricing."
+      },
+      {
+        name:"Tyto Robotics — Brushless Motor Manufacturers Guide",
+        url:"https://www.tytorobotics.com/blogs/articles/brushless-motor-manufacturers-for-evtol-and-aviation",
+        tags:["Free","No login","Market overview"],
+        used:"Confirmed supplier landscape: KDE Direct, T-Motor, NeuMotors, Hacker Motor, Plettenberg, Lumenier. Used for quality tier ranking and application context.",
+        how:"Search 'brushless motor manufacturers UAV eVTOL' — free industry overview blog."
+      },
+      {
+        name:"YRDRONE — Top 10 US Drone Motor Manufacturers 2026",
+        url:"https://yrdrone.com/blog/uncategorized/top-10-us-drone-motor-manufacturers/",
+        tags:["Free","No login","2026 data"],
+        used:"NDAA compliance landscape for motors, NeuMotors and KDE Direct confirmed as US-preferred alternatives to T-Motor. Unusual Machines and Vertiq noted as emerging US players.",
+        how:"Search '2026 US drone motor manufacturers NDAA' — recent market overview."
+      },
+      {
+        name:"Hobbywing — Official ESC Product Page",
+        url:"https://www.hobbywing.com/en/drone-propulsion/multirotor/esc",
+        tags:["Free","Direct supplier","China-based"],
+        used:"Hobbywing as #1 global ESC market leader. FOC technology for VTOL platforms. CAN/RS485 communication protocols. Pricing range inferred from product specs.",
+        how:"Direct website — product specs visible without login."
+      },
+      {
+        name:"Castle Creations — Official Website",
+        url:"https://home.castlecreations.com/",
+        tags:["Free","Direct supplier","USA-based","NDAA-compliant"],
+        used:"Castle Creations confirmed as primary US-made ESC alternative. Talon series for fixed-wing applications.",
+        how:"Direct website — US-engineered; key NDAA-compliant backup to Hobbywing."
+      },
+      {
+        name:"Unmanned Systems Technology — ESC Supplier Directory",
+        url:"https://www.unmannedsystemstechnology.com/expo/electronic-speed-controllers-esc/",
+        tags:["Free","No login","Industry directory"],
+        used:"Advanced Power Drives (APD), Currawong Engineering, Embention, T-Motor ESC line all confirmed as commercial/defense-grade ESC suppliers.",
+        how:"Search 'UAV ESC suppliers unmanned systems technology' — free industry directory."
+      }
+    ]
+  },
+  {
+    type:"supplier",
+    category:"Battery & Power Suppliers",
+    color:"#0F6E56",
+    sources:[
+      {
+        name:"Grepow / Tattu — Official Website",
+        url:"https://www.grepow.com/uav-battery.html",
+        tags:["Free","Direct supplier","China-based"],
+        used:"Tattu brand confirmed as Grepow sub-brand. Tattu Pro/Plus series for industrial UAVs. 600+ cycle life, 5C fast charging, NMC 811 semi-solid state cells at 380 Wh/kg. Custom UAV battery OEM confirmed.",
+        how:"Direct website — product specs and MOQ info accessible without login."
+      },
+      {
+        name:"MaxAmps Lithium Batteries — Official Website",
+        url:"https://maxamps.com/pages/commercial-drone-lipo-batteries-php",
+        tags:["Free","Direct supplier","USA-based","NDAA-compliant"],
+        used:"MaxAmps confirmed as US-assembled LiPo alternative. Clients: Lockheed Martin, Boeing, NASA, DoD. Spokane WA location. Price premium over China-sourced alternatives confirmed.",
+        how:"Direct website — pricing ranges visible on product pages."
+      },
+      {
+        name:"Unmanned Systems Technology — MaxAmps Profile",
+        url:"https://www.unmannedsystemstechnology.com/company/maxamps/",
+        tags:["Free","No login"],
+        used:"MaxAmps 8S/12S battery pack specifications, DJI S800 and Freefly Alta compatibility, 20-year history, defense program experience.",
+        how:"Search 'MaxAmps UAV batteries unmanned systems' — free supplier profile."
+      },
+      {
+        name:"Grepow Blog — Top LiPo Battery Manufacturers",
+        url:"https://www.grepow.com/blog/top-lipo-battery-manufacturers-you-can-trust.html",
+        tags:["Free","No login"],
+        used:"Confirmed supplier landscape: Tattu, Gens ace, Venom, MaxAmps, Turnigy, Tianjin Lishen, EEMB, Thunder Power RC. Quality reputation data for each brand.",
+        how:"Search 'top LiPo battery manufacturers drone' — industry overview from leading manufacturer."
+      }
+    ]
+  },
+  {
+    type:"supplier",
+    category:"Navigation, Avionics & Communication Suppliers",
+    color:"#0F6E56",
+    sources:[
+      {
+        name:"u-blox AG — Official GNSS Product Pages",
+        url:"https://www.u-blox.com/en/positioning-chips-and-modules",
+        tags:["Free","Direct supplier","Switzerland-based"],
+        used:"u-blox confirmed as #1 GNSS module supplier for UAVs. ZED-F9P RTK (cm-level), NEO-M9N (0.7m accuracy), multi-constellation support. Swiss design confirmed.",
+        how:"Direct website — product selector and datasheets free to download."
+      },
+      {
+        name:"Accio.com — u-blox Module Comparison",
+        url:"https://www.accio.com/plp/u-blox-gnss-module",
+        tags:["Free","No login","Pricing aggregator"],
+        used:"MOQ data: ZED-F9P available from MOQ 1–20 pcs depending on supplier. Price ranges $35–$280/unit confirmed across Chinese resellers and direct. Delivery estimates to US: 1–4 weeks.",
+        how:"Search 'u-blox ZED-F9P price MOQ' — live price comparison aggregator."
+      },
+      {
+        name:"uAvionix — Official Website",
+        url:"https://uavionix.com/",
+        tags:["Free","Direct supplier","USA-based","FAA TSO-certified"],
+        used:"ping200XR as primary ADS-B transponder for BVLOS. TSO-C145e certified. 52g weight. 1.5W power. DO-160G environmental tested. Stock availability confirmed ('ships from stock' per product page).",
+        how:"Direct website — product specs and pricing inquiry form available."
+      },
+      {
+        name:"Sagetech Avionics — UST Profile",
+        url:"https://www.unmannedsystemstechnology.com/company/sagetech-corporation/",
+        tags:["Free","No login","FAA TSO-certified"],
+        used:"MXS transponder: first FAA-certified small transponder with ADS-B In receiver. 1.5M+ certified mission flight hours. XPS/XPG series confirmed. Ships from stock for XP series.",
+        how:"Search 'Sagetech ADS-B transponder UAV' — free supplier profile with full specs."
+      },
+      {
+        name:"Microhard Systems — Telemetry Modules",
+        url:"https://www.microhardcorp.com/",
+        tags:["Free","Direct supplier","Canada-based"],
+        used:"pDDL900 / n920 BVLOS datalink confirmed. Canada-origin for geo diversity. Used in commercial BVLOS UAV programs worldwide.",
+        how:"Direct website — product specs available; pricing by quote."
+      },
+      {
+        name:"FreeWave Technologies — RF Datalinks",
+        url:"https://www.freewave.com/",
+        tags:["Free","Direct supplier","USA-based"],
+        used:"900 MHz FHSS modules confirmed for UAV BVLOS telemetry. Colorado-based. Used in military and commercial drone programs.",
+        how:"Direct website — product catalog free to access."
+      }
+    ]
+  },
+  {
+    type:"supplier",
+    category:"Airframe, Composites & Structures",
+    color:"#0F6E56",
+    sources:[
+      {
+        name:"Hexcel Corporation — UAV Market Page",
+        url:"https://hexcel.com/Markets/Space-and-Defense/UAVmarket",
+        tags:["Free","Direct supplier","USA-based"],
+        used:"HexPly M78.1 and M901 prepreg systems confirmed for UAV fuselage/wing manufacture. Authorized distributors: Coast-Line International (CA) and Heatcon Composite Systems (WA) for UAV market.",
+        how:"Direct website — distributor contacts listed publicly. Coast-Line is CA-based, ideal for Zipline SF sourcing."
+      },
+      {
+        name:"DragonPlate — UAV Carbon Fiber",
+        url:"https://dragonplate.com/using-dragonplate-carbon-fiber-composites-to-build-uavs-and-drones",
+        tags:["Free","Direct supplier","USA-based"],
+        used:"Off-shelf CF sheets, braided tubes, pultruded materials. Custom fabrication available. NY-based with standard shipping. Featured in Smithsonian Air & Space.",
+        how:"Direct website — pricing visible on product pages without login."
+      },
+      {
+        name:"UAV Composite Parts — Unmanned Systems Technology",
+        url:"https://www.unmannedsystemstechnology.com/expo/composites/",
+        tags:["Free","No login","Industry directory"],
+        used:"Confirmed supplier landscape: Hexcel, Toray, Teijin, Solvay, SGL Carbon, Mitsubishi Chemical, CRP Technology for UAV composite structures. Aramid/Kevlar use for impact zones confirmed.",
+        how:"Search 'UAV composite manufacturers' — free industry supplier directory."
+      },
+      {
+        name:"OpenPR — Drone Carbon Fiber Market Report Summary",
+        url:"https://www.openpr.com/news/4417083/drone-carbon-fiber-composite-structural-parts-market-expanding",
+        tags:["Free","No login","Market size data"],
+        used:"Market size: $847M (2024) → $2,018M (2031) at 13.2% CAGR. Key companies confirmed: Toray, Teijin, Mitsubishi, Solvay, SGL Carbon, Hexcel, Juno, Refitech, Carbon-Based Technology.",
+        how:"Search 'drone carbon fiber composite market 2024' on OpenPR — free press release database."
+      },
+      {
+        name:"Volz Servos — Official Website",
+        url:"https://www.volz-servos.com/",
+        tags:["Free","Direct supplier","Germany-based"],
+        used:"DA servos confirmed for military and commercial UAV use. Aerospace certification. Premium tier for control surface actuators.",
+        how:"Direct website — product specs and datasheets available."
+      },
+      {
+        name:"Hitec RCD — Servo Product Range",
+        url:"https://hitecrcd.com/",
+        tags:["Free","Direct supplier","South Korea-based"],
+        used:"HS-5086WP and D645MW digital servo models confirmed for UAV applications. US distribution warehouse exists (ships from CA).",
+        how:"Direct website — pricing on US distributor pages (Servo City, Amazon)."
+      }
+    ]
+  },
+  {
+    type:"supplier",
+    category:"Safety, Payload & Ground Support Suppliers",
+    color:"#0F6E56",
+    sources:[
+      {
+        name:"Indemnis — Nexus Parachute System",
+        url:"https://indemnis.com/",
+        tags:["Free","Direct supplier","USA-based","FAA-accepted"],
+        used:"Nexus ballistic parachute confirmed as FAA-accepted safety system for BVLOS drone delivery. Anchorage AK headquarters. Used in Zipline-class commercial delivery programs.",
+        how:"Direct website — product page with spec sheet."
+      },
+      {
+        name:"Fruity Chutes — UAV Parachutes",
+        url:"https://fruitychutes.com/",
+        tags:["Free","Direct supplier","USA-based"],
+        used:"UAV recovery parachute systems. Sacramento CA location (1.5 hrs from SF). Pricing: $150–$600/system. Fast shipping confirmed.",
+        how:"Direct website — pricing listed publicly."
+      },
+      {
+        name:"Maxon Motor — Precision Drive Systems",
+        url:"https://www.maxongroup.com/",
+        tags:["Free","Direct supplier","Switzerland-based"],
+        used:"Precision DC motors for P2 Droid winch system. Aerospace-qualified drives. Swiss precision engineering. Used in Mars Rover and UAV actuation.",
+        how:"Direct website — product configurator and pricing by inquiry."
+      },
+      {
+        name:"Drone Rescue Systems — DRS Parachutes",
+        url:"https://www.dronerescue.com/",
+        tags:["Free","Direct supplier","Austria-based"],
+        used:"DRS-M600 parachute system used in commercial delivery drones. EU-certified. Austrian origin adds geographic diversity.",
+        how:"Direct website — product specs and EU certification documents available."
+      }
+    ]
+  },
+  {
+    type:"distributor",
+    category:"Distributor & Pricing Sources",
+    color:"#854F0B",
+    sources:[
+      {
+        name:"Digi-Key Electronics",
+        url:"https://www.digikey.com/",
+        tags:["Free","No login for browsing","Live pricing","Live lead times"],
+        used:"Primary source for: BMS IC pricing (TI BQ series, ADI LTC6811), MCU pricing (TI Hercules, Microchip SAM, STM32), IMU pricing (InvenSense ICM, Bosch BMI), lead time data. Lead times shown as 'Usually ships in X weeks' are real distributor data.",
+        how:"Search any part number directly on Digi-Key. Lead time visible without account. Export to CSV for bulk data. KEY TIP: The 'Stock' column and 'Lead Time' column are your Phase 1 data gold mine."
+      },
+      {
+        name:"Mouser Electronics",
+        url:"https://www.mouser.com/",
+        tags:["Free","No login for browsing","Live pricing","Live lead times"],
+        used:"Cross-reference for semiconductor lead times (MCUs, BMS ICs, GPS chipsets). Also used for LTE module pricing (Sierra Wireless, Telit, u-blox). Alternative to Digi-Key for stock comparison.",
+        how:"Same approach as Digi-Key — search part number, view stock and lead time. Compare both for accuracy."
+      },
+      {
+        name:"Accio.com — Component Price Aggregator",
+        url:"https://www.accio.com/",
+        tags:["Free","No login","Multi-supplier comparison"],
+        used:"u-blox GNSS module pricing comparison across Chinese resellers vs direct. MOQ data (1–100 pcs). Delivery estimates to US. Used to establish price ranges for navigation components.",
+        how:"Search component name or part number — aggregates Alibaba, direct suppliers, and importers with price and MOQ comparison."
+      },
+      {
+        name:"GetFPV — ESC & Motor Retail Pricing",
+        url:"https://www.getfpv.com/",
+        tags:["Free","No login","US distributor"],
+        used:"Retail price anchor for Hobbywing, Lumenier, Castle Creations, T-Motor ESCs and motors. Used to validate price range estimates. FL-based US distributor.",
+        how:"Direct browsing — no account needed. Filter by brand to compare pricing."
+      },
+      {
+        name:"Tattu / Genstattu — Battery Pricing",
+        url:"https://genstattu.com/tattu-uav-battery.html",
+        tags:["Free","No login","Direct pricing"],
+        used:"LiPo pack prices: $280–$650/pack range for UAV-grade 6S–14S packs. Free shipping threshold to USA confirmed ($49+). MOQ: single unit for retail, custom packs by inquiry.",
+        how:"Direct website — prices listed publicly. Custom OEM pricing requires email inquiry."
+      }
+    ]
+  },
+  {
+    type:"market",
+    category:"Market Research & Industry Reports",
+    color:"#185FA5",
+    sources:[
+      {
+        name:"Kings Research — Drone Motor Market 2024–2031",
+        url:"https://www.kingsresearch.com/drone-motor-market-1085",
+        tags:["Free summary","Paid full report"],
+        used:"Market size: $2.6B (2023) → $6.1B (2031). Top players confirmed: DJI, Hacker Motor, KDE Direct, Parrot, T-Motor, Nidec, Constar Micromotor. Asia-Pacific fastest growing at 11.59% CAGR. Brushless motor = 11% share.",
+        how:"Free executive summary available without purchase — sufficient for portfolio use. Full report is paid."
+      },
+      {
+        name:"Fortune Business Insights — Drone Motor Market",
+        url:"https://www.fortunebusinessinsights.com/drone-motor-market-110736",
+        tags:["Free summary","Paid full report"],
+        used:"Global motor market $6.7B in 2025. BLDC motors dominate. India PLI scheme context. Government investment drivers for drone motor market.",
+        how:"Free summary page — key figures available without purchasing. Use for geographic market share data."
+      },
+      {
+        name:"Valuates Reports — Drone ESC Market",
+        url:"https://reports.valuates.com/market-reports/QYRE-Auto-23H13163/global-drone-electronic-speed-controller-esc",
+        tags:["Free summary","Paid full report"],
+        used:"ESC market players confirmed: Hobbywing, Castle Creations, T-Motor, Aikon Electronics, FLIPSKY, Embention, AltiGator, Plettenberg, APD, Currawong, Blue Robotics.",
+        how:"Free executive summary — competitor list and market segments visible without purchase."
+      },
+      {
+        name:"OpenPR — Drone Carbon Fiber Market 2024",
+        url:"https://www.openpr.com/news/4417083",
+        tags:["Free","No login"],
+        used:"CF composite structural parts market size and growth. Confirmed manufacturer list for airframe suppliers.",
+        how:"Direct URL — free press release database, no account needed."
+      }
+    ]
+  },
+  {
+    type:"regulatory",
+    category:"Regulatory, NDAA & Geographic Risk Sources",
+    color:"#993C1D",
+    sources:[
+      {
+        name:"FAA — Drone Type Certification Program",
+        url:"https://www.faa.gov/uas/advanced_operations/beyond_visual_line_of_sight",
+        tags:["Free","Government source","BVLOS regulatory"],
+        used:"FAA BVLOS waiver process context. Zipline's FAA type certification participation confirmed (per Wikipedia source). ADS-B requirements for BVLOS operations.",
+        how:"Direct FAA website — free regulatory documentation."
+      },
+      {
+        name:"U.S. NDAA Section 848 — Prohibited Components List",
+        url:"https://www.acquisition.gov/dfars/252.204-7025-prohibition-commercial-satellite-services-certain-foreign-entities.html",
+        tags:["Free","Government source","Compliance critical"],
+        used:"NDAA compliance flag for all Chinese-origin components (Hobbywing, T-Motor, Grepow, Quectel, DJI-related parts). Critical for Zipline's US government-adjacent programs.",
+        how:"Search 'NDAA drone component restrictions 2024' — DOD acquisition FAR/DFARS documentation."
+      },
+      {
+        name:"Observatory of Economic Complexity (OEC) — oec.world",
+        url:"https://oec.world/",
+        tags:["Free","No login","Geographic concentration data"],
+        used:"Framework for geographic concentration scoring. Use OEC to find: what % of global drone motor production comes from China, battery cell imports by country, carbon fiber by origin. This is the PRIMARY source for your Geo Concentration Risk column.",
+        how:"Go to oec.world → search any HS code (e.g., 8501 for motors, 8507 for batteries, 5502 for carbon fiber) → see country export share as % of world total. FREE and highly visual."
+      },
+      {
+        name:"U.S. Trade Representative — Supply Chain Risk Reports",
+        url:"https://ustr.gov/issue-areas/industry-manufacturing/industrial-goods/raw-materials",
+        tags:["Free","Government source"],
+        used:"China's market share in rare earth minerals (used in permanent magnets in drone motors), battery cell production concentration, strategic material risk framework.",
+        how:"Direct USTR website — free PDF reports on critical supply chains."
+      },
+      {
+        name:"Reshoring Initiative — Data Hub",
+        url:"https://reshorenow.org/",
+        tags:["Free","Industry source"],
+        used:"US manufacturing capacity context for motors, electronics, composites. Used to assess feasibility of US-sourced alternatives.",
+        how:"Free data hub — industry reports on reshoring trends by component category."
+      },
+      {
+        name:"Congressional Research Service — Battery Supply Chain Report",
+        url:"https://crsreports.congress.gov/product/pdf/R/R47588",
+        tags:["Free","Government source","PDF download"],
+        used:"China's dominance in lithium battery cell manufacturing (>70% global share). Geographic risk justification for PW-01 battery high geo risk rating. Cobalt and lithium sourcing concentration.",
+        how:"Direct download from CRS — no login needed. Search 'CRS battery supply chain 2023'."
+      },
+      {
+        name:"Unmanned Systems Technology — ADS-B Regulatory Context",
+        url:"https://www.unmannedsystemstechnology.com/expo/ads-b-avionics-for-drones-uavs/",
+        tags:["Free","No login"],
+        used:"ADS-B regulatory context for BVLOS operations. uAvionix and Sagetech as FAA-accepted solutions. Airspace situational awareness requirements.",
+        how:"Search 'ADS-B drone BVLOS requirements' — free industry reference."
+      }
+    ]
+  },
+  {
+    type:"assumption",
+    category:"Assumptions & Data Caveats",
+    color:"#854F0B",
+    sources:[
+      {
+        name:"ASSUMPTION: Zipline supplier list is not public",
+        url:"",
+        tags:["Proxy data","State clearly in portfolio"],
+        used:"Zipline does not disclose its actual supplier names anywhere. All supplier mappings in this database are proxy suppliers — real companies that make components matching Zipline's known specifications. This is standard practice in supply chain academia and consulting when working from public information.",
+        how:"In your Excel Assumptions Tab: write 'All supplier data represents proxy sourcing candidates based on publicly available technical specifications, market research, and distributor databases. Zipline's actual supplier agreements are proprietary and not disclosed publicly.'"
+      },
+      {
+        name:"ASSUMPTION: Pricing is market proxy, not quoted pricing",
+        url:"",
+        tags:["Proxy data","State clearly in portfolio"],
+        used:"All unit prices are derived from: Digi-Key/Mouser live listings, manufacturer website price pages, GetFPV/Genstattu retail listings, and market research report price ranges. They are not formal supplier quotes. Actual OEM/volume contract pricing will differ — typically 20–50% lower than retail.",
+        how:"State in Assumptions Tab: 'Unit pricing sourced from public distributor listings (Digi-Key, Mouser, GetFPV, manufacturer websites) as of Q1 2025–2026. Volume OEM contract pricing typically 20–50% below listed retail. Annual contract estimates assume 500-unit fleet at 2 batteries/drone/year, 1 motor set/drone/year, etc.'"
+      },
+      {
+        name:"ASSUMPTION: Lead times are standard, not shortage-era",
+        url:"",
+        tags:["Risk caveat","State clearly in portfolio"],
+        used:"Lead times shown reflect 2024–2026 standard conditions. During the 2021–2023 semiconductor shortage, MCU lead times extended to 40–52 weeks, LTE module lead times reached 30+ weeks. Historical volatility is the input for your Lead-Time Volatility pillar score.",
+        how:"State in Assumptions Tab: 'Lead times represent standard 2024–2026 market conditions. Historical peak lead times (2021–2023 shortage) documented separately in Lead-Time Volatility pillar scoring.'"
+      },
+      {
+        name:"ASSUMPTION: Annual contract estimates assume 500-drone fleet",
+        url:"",
+        tags:["Volume assumption","State clearly in portfolio"],
+        used:"Annual contract estimates calculated assuming: Zipline operates ~500 active drones, each drone requires ~2 battery replacements/year, 1 motor replacement per 200 flights, parachute replaced annually, etc. These are illustrative fleet assumptions.",
+        how:"State in Assumptions Tab: 'Annual contract value estimates assume a 500-unit drone fleet with component replacement cycles based on publicly documented UAV maintenance intervals.'"
+      }
+    ]
+  }
+];
+
+let activeTab = 'all';
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderContent();
+}
+
+function renderContent() {
+  const container = document.getElementById('content');
+  const sections = activeTab === 'assumption'
+    ? SOURCES.filter(s => s.type === 'assumption')
+    : activeTab === 'all'
+    ? SOURCES
+    : SOURCES.filter(s => s.type === activeTab);
+
+  container.innerHTML = sections.map((section, si) => {
+    const isAssumption = section.type === 'assumption';
+    const items = section.sources.map((s, i) => {
+      if (isAssumption) {
+        return `<div class="assumption-box">
+          <strong>${s.name}</strong><br>
+          ${s.used}<br><br>
+          <em>→ How to use in your portfolio: ${s.how}</em>
+        </div>`;
+      }
+      return `<div class="source-card">
+        <div class="source-name">${s.name}</div>
+        ${s.url ? `<div class="source-url">↗ ${s.url}</div>` : ''}
+        <div class="source-meta">${s.tags.map(t=>`<span class="meta-chip">${t}</span>`).join('')}</div>
+        <div class="source-used"><strong>What we got from it:</strong> ${s.used}</div>
+        <div class="source-how">→ How to access: ${s.how}</div>
+      </div>`;
+    }).join('');
+
+    const bodyId = `body-${si}`;
+    const chevId = `chev-${si}`;
+    return `<div class="section">
+      <div class="section-header" onclick="toggleSection('${bodyId}','${chevId}')">
+        <div class="section-title">
+          <span class="cat-dot" style="background:${section.color}"></span>
+          ${section.category}
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="section-count">${section.sources.length} source${section.sources.length!==1?'s':''}</span>
+          <span class="chevron" id="${chevId}">▶</span>
+        </div>
+      </div>
+      <div class="section-body ${si===0?'open':''}" id="${bodyId}">${items}</div>
+    </div>`;
+  }).join('');
+
+  if (sections.length > 0) {
+    const firstBody = document.querySelector('.section-body');
+    const firstChev = document.querySelector('.chevron');
+    if (firstBody) firstBody.classList.add('open');
+    if (firstChev) firstChev.classList.add('open');
+  }
+}
+
+function toggleSection(bodyId, chevId) {
+  const body = document.getElementById(bodyId);
+  const chev = document.getElementById(chevId);
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
+}
+
+renderContent();
+</script>
