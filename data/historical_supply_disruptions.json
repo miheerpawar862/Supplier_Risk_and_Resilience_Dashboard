@@ -1,0 +1,774 @@
+[
+  {
+    "id": 0,
+    "cat": "Rare Earth / Magnets",
+    "comp": "Neodymium (NdFeB) Magnets — Drone Motors",
+    "years": "2010–2011, 2025–ongoing",
+    "sev": "Critical",
+    "status": "Ongoing",
+    "causes": [
+      "China export quota cut 40% in 2010",
+      "Japan maritime dispute — 2-month embargo",
+      "2025 China retaliatory export license freeze (trade war)"
+    ],
+    "summary": "China controls 90%+ of global rare earth magnet production. In 2010 it cut export quotas from 65,000 tons (2005) to ~31,000 tons, then embargoed Japan for 2 months during a maritime dispute. Prices spiked 1,000%+ within months. In April 2025, China again froze export licenses for rare earth magnets amid the US-China trade war — Ford halted Chicago Explorer production, Suzuki halted model lines, and drone motor supply was severely impacted.",
+    "lt_impact": true,
+    "lt_baseline": "4–8 wks",
+    "lt_peak": "Indefinite (embargo)",
+    "lt_pct": 100,
+    "lt_label": "Complete embargo possible",
+    "price_impact": true,
+    "price_baseline": "$42/kg neodymium",
+    "price_peak": "$142/kg (+238%) in 2010; dysprosium $250→$400/kg; cerium $5→$67/kg. 2025: TBD but motor prices rising",
+    "price_pct": 90,
+    "companies": [
+      {
+        "name": "Toyota",
+        "action": "Maintains strategic stockpiles, recycles magnets in-house, holds long-term contracts with Lynas (Australia). Drew from Japan's 2010 crisis lessons."
+      },
+      {
+        "name": "General Motors",
+        "action": "Invested in US-based rare earth suppliers in 2021, advancing low-rare-earth motor technologies to reduce dependence on Chinese-sourced NdFeB."
+      },
+      {
+        "name": "T-Motor / Drone Motors (China)",
+        "action": "Chinese motor manufacturers are vertically integrated into the rare earth supply chain and largely insulated from external shortages — but face NDAA risk in US market."
+      },
+      {
+        "name": "US Department of Defense",
+        "action": "Invested $400M in MP Materials (Mountain Pass, CA) in July 2025. Set 10-year price floor at $110/kg for NdPr. Goal: mine-to-magnet US supply chain by 2027."
+      },
+      {
+        "name": "KDE Direct / NeuMotors",
+        "action": "US-based motor makers shifted to rare-earth-aware designs and secured supply through non-China sourcing (Lynas Australia, MP Materials US). Premium but NDAA-compliant."
+      },
+      {
+        "name": "BMW / Volkswagen",
+        "action": "Accelerated R&D in rare-earth-free motor drivetrain designs (induction motors, ferrite magnets). Still 2–3 years from mass deployment."
+      }
+    ],
+    "resolution": {
+      "status": "Ongoing",
+      "text": "2010–2011 crisis partially resolved by WTO ruling (2012) against China's export quota system. Prices fell 2013–2019 as new mines opened. 2025 crisis: June 2025 US-China London framework provided 90-day truce, but licenses still delayed. Long-term resolution requires non-Chinese mine-to-magnet capacity — estimated 5–10 year timeline. MP Materials Mountain Pass is the only US rare earth mine; full magnet production by 2027 (projected)."
+    },
+    "sources": [
+      {
+        "name": "CSIS — Drone Supply Chain War (2025)",
+        "url": "https://www.csis.org/analysis/drone-supply-chain-war"
+      },
+      {
+        "name": "GQG Partners — Critical Dependence on Rare Earths",
+        "url": "https://gqg.com/insights/critical-dependence-on-rare-earth-minerals/"
+      },
+      {
+        "name": "US Congressional Hearing CHRG-112hhrg68444",
+        "url": "https://www.govinfo.gov/content/pkg/CHRG-112hhrg68444"
+      },
+      {
+        "name": "Fast Company — China Rare Earth Ban 2025",
+        "url": "https://www.fastcompany.com/91316208/china-rare-earth-minerals-banning-export"
+      },
+      {
+        "name": "CSIS — China Rare Earth Restrictions 2025",
+        "url": "https://www.csis.org/analysis/chinas-new-rare-earth-and-magnet-restrictions"
+      },
+      {
+        "name": "Hudson Institute — Rare Earth Magnet Supply",
+        "url": "https://www.hudson.org/environment/us-must-break-chinas-chokehold"
+      },
+      {
+        "name": "ScienceDirect — Chinese Policies & Rare Earth Resilience",
+        "url": "https://www.sciencedirect.com/science/article/pii/S092134491830435X"
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "cat": "MCU / Semiconductor",
+    "comp": "Microcontrollers (MCU) — Flight Controllers, BMS, Autopilots",
+    "years": "2020–2023, 2025 re-emergence",
+    "sev": "Critical",
+    "status": "Partial",
+    "causes": [
+      "COVID-19 factory closures at TSMC, Samsung, GlobalFoundries",
+      "Texas winter storm Feb 2021 closed Samsung/Infineon/NXP Austin fabs",
+      "Renesas factory fire March 2021 (30% global MCU market affected)",
+      "Ukraine war cut neon gas supply (Ukraine = 50% of global neon, key for chip lasers)",
+      "Demand spike from EV, IoT, and drone industries simultaneously"
+    ],
+    "summary": "The 2020–2023 chip shortage was the most severe semiconductor crisis in history. MCUs were the hardest hit category. STM32 (the most popular drone FC MCU) had 99% of its product line unavailable in 2021. Lead times hit 52–65 weeks on popular parts. Prices rose 10–20× pre-pandemic levels for some components. The Renesas factory fire alone threatened 30% of global MCU supply for automotive. TI Hercules — the specific MCU confirmed inside Zipline's flight controller — was severely constrained. In 2025, MCU lead times are re-emerging at 20–55 weeks driven by EV/AI demand.",
+    "lt_impact": true,
+    "lt_baseline": "8–12 wks",
+    "lt_peak": "52–99 wks (STM32: 65 wks at Mouser, Microchip EEPROM: 99 wks)",
+    "lt_pct": 98,
+    "lt_label": "Effectively unobtainable for 18+ months",
+    "price_impact": true,
+    "price_baseline": "$5–20/unit typical MCU",
+    "price_peak": "10–20× pre-pandemic pricing on STM32F4xx and automotive MCUs; TI raised prices 10–30% on 60,000+ parts in June 2025",
+    "price_pct": 85,
+    "companies": [
+      {
+        "name": "STMicroelectronics",
+        "action": "Invested in 300mm wafer fab expansion in Agrate, Italy and Crolles, France. Partnered with TSMC for advanced node outsourcing. Revenue grew from price increases even during shortage."
+      },
+      {
+        "name": "Texas Instruments",
+        "action": "Announced $30B in domestic fab expansion (Sherman, Texas). Emphasized 'internal manufacturing' strategy — building 6 new 300mm fabs by 2030 to reduce dependence on TSMC. Raised prices 10–30% across 60K+ parts in June 2025."
+      },
+      {
+        "name": "Microchip Technology",
+        "action": "Launched 'Preferred Supply Program' for customers committing to multi-year forecasts. Added capacity at existing Oregon and Thailand facilities. Raised prices 2021–2022."
+      },
+      {
+        "name": "Renesas Electronics",
+        "action": "After March 2021 fire: rebuilt in 100 days with 24/7 operations, government support, and customer advance deposits. Acquired Dialog Semiconductor to diversify portfolio."
+      },
+      {
+        "name": "Intel",
+        "action": "CHIPS Act beneficiary — $19.5B in grants for US fab expansion in Ohio and Arizona. Goal: revive US semiconductor manufacturing leadership."
+      },
+      {
+        "name": "Apple",
+        "action": "Locked in 3-year supply agreements with TSMC for advanced nodes, effectively crowding out smaller drone/UAV customers from fab capacity allocations."
+      },
+      {
+        "name": "Drone OEMs (general)",
+        "action": "Qualified second-source MCUs (e.g., NXP alternatives to STM32), increased safety stock from 4–8 weeks to 26–52 weeks, joined industry consortia for allocation prioritization."
+      }
+    ],
+    "resolution": {
+      "status": "Partial",
+      "text": "Standard consumer MCU lead times normalized to 10–20 weeks by late 2023. However, automotive and industrial-grade MCUs (ASIL-rated, like TI Hercules) remain constrained at 20–55 weeks as of early 2026. STM32 automotive TSX series hit 55 weeks in early 2026. The fundamental issue — 70% of MCU production on mature nodes (40nm+) with no new capacity investment — is not resolved. US CHIPS Act investments won't produce wafers until 2027–2028."
+    },
+    "sources": [
+      {
+        "name": "Wikipedia — 2020–2023 Global Chip Shortage",
+        "url": "https://en.wikipedia.org/wiki/2020%E2%80%932023_global_chip_shortage"
+      },
+      {
+        "name": "The Register — Chip Shortage Engineer Survey 2022",
+        "url": "https://www.theregister.com/2022/03/25/chip_shortage_report/"
+      },
+      {
+        "name": "Electropages — Semiconductor Shortage 2021",
+        "url": "https://www.electropages.com/blog/2021/05/semiconductor-shortage-see-it-yourself"
+      },
+      {
+        "name": "WEF — Semiconductor Chip Shortage 2022",
+        "url": "https://www.weforum.org/stories/2022/02/semiconductor-chip-shortage-supply-chain/"
+      },
+      {
+        "name": "Fusion Worldwide — MCU Crunch 2025",
+        "url": "https://www.fusionww.com/insights/blog/the-mcu-crunch-lead-time-extensions"
+      },
+      {
+        "name": "J2 Sourcing — March 2026 Component Shortage Update",
+        "url": "https://j2sourcing.com/blog/electronic-component-shortage-update-march-2026-2/"
+      },
+      {
+        "name": "Semiconductor Engineering — End In Sight For Chip Shortages?",
+        "url": "https://semiengineering.com/end-in-sight-for-chip-shortages/"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "cat": "Battery / Raw Materials",
+    "comp": "LiPo / Li-ion Battery Packs — Lithium, Cobalt, Nickel",
+    "years": "2017–2018, 2021–2022, 2025 (tariff risk)",
+    "sev": "High",
+    "status": "Partial",
+    "causes": [
+      "EV adoption explosion created demand that outstripped mining capacity",
+      "DRC cobalt supply concentration (65%+ from one country with political instability)",
+      "COVID-19 disrupted Chilean, Australian, Argentinian lithium mining",
+      "Ukraine war drove nickel price spike (nickel: $20K→$100K/ton in March 2022)",
+      "China controls 67% of global lithium refining; 80% of global battery production",
+      "2025 US tariffs (145% on Chinese battery products) add cost spike risk"
+    ],
+    "summary": "Lithium carbonate prices rose from ~$7,500/ton in 2020 to over $50,000/ton by March 2022 — a 6× increase in 18 months. LiPo battery pack prices (which had been falling for a decade) rose 10%+ in 2022 for the first time since 2010. Cell prices hit $160/kWh in Q1 2022 vs $105/kWh the year before. For UAV batteries, custom pack prices from Chinese suppliers (Grepow/Tattu) rose 20–30% in 2021–2022. The cobalt crisis was earlier (2017–2018): cobalt went from $30K to $95K/ton. US 145% tariffs on Chinese battery products (April 2025) represent a new latent price shock.",
+    "lt_impact": true,
+    "lt_baseline": "4–8 wks (standard)",
+    "lt_peak": "12–20 wks for custom UAV packs; allocation periods during peak EV demand",
+    "lt_pct": 55,
+    "lt_label": "Moderate — delayed not blocked",
+    "price_impact": true,
+    "price_baseline": "$280–$400/pack (2020)",
+    "price_peak": "$400–$650/pack (+30–60%) in 2022 peak; Chinese LFP cell +20% in Sept 2021; Nickel peak +400% briefly",
+    "price_pct": 65,
+    "companies": [
+      {
+        "name": "Tesla",
+        "action": "Signed long-term lithium supply contracts with Piedmont Lithium (US) and Chilean miners. Shifted Model 3 standard range to LFP (cobalt-free) chemistry to reduce cobalt exposure. Elon Musk described nickel as 'biggest concern for scaling.'"
+      },
+      {
+        "name": "Grepow / Tattu (drone batteries)",
+        "action": "Diversified cell sourcing beyond single China chemistry. Developed NMC 811 semi-solid state cells for higher energy density (380 Wh/kg) to offset price per Wh. Maintained custom UAV OEM pricing through volume commitments."
+      },
+      {
+        "name": "MaxAmps (US batteries)",
+        "action": "US-assembled packs insulated from Chinese cell price swings — but face higher baseline cost. Focused on defense/aerospace customers where NDAA compliance justified premium pricing."
+      },
+      {
+        "name": "Volkswagen/BMW/Ford",
+        "action": "Invested directly in lithium mining projects. VW invested in Canadian miner. Ford signed deals with Australian Liontown Resources for lithium hydroxide. Goal: bypass spot market volatility with equity stakes."
+      },
+      {
+        "name": "CATL (China)",
+        "action": "Vertically integrated into lithium mining (invested in mines in Chile, Argentina, Bolivia). Launched 'cell-to-pack' and 'sodium ion' alternatives to reduce dependence on lithium-heavy chemistries."
+      },
+      {
+        "name": "US Government",
+        "action": "Inflation Reduction Act (2022): $3B for battery supply chain grants, domestic manufacturing tax credits. Executive Order (April 2025) investigating critical mineral import dependence."
+      }
+    ],
+    "resolution": {
+      "status": "Partial",
+      "text": "Lithium carbonate prices fell from $50,000/ton (March 2022) to $12,000/ton by 2024 as supply surged 35%+ (led by China, Australia, Argentina). Battery pack prices are declining again — IEA reported lithium cost per kWh dropped from $67 in 2022 to $15 in 2024. However: (1) cobalt and nickel remain supply-risk materials; (2) US 145% tariffs on Chinese battery products create a new cost shock for 2025; (3) structural dependence on China for cell production (80% global share) is not resolved and cannot be resolved quickly."
+    },
+    "sources": [
+      {
+        "name": "PatentPC — Battery Supply Chain Disruptions",
+        "url": "https://patentpc.com/blog/battery-supply-chain-disruptions"
+      },
+      {
+        "name": "Addionics — Rising Battery Prices 2022",
+        "url": "https://addionics.com/blog/could-rising-battery-prices-slow-down-the-ev-revolution"
+      },
+      {
+        "name": "IEA — Global EV Outlook 2023: Battery Trends",
+        "url": "https://www.iea.org/reports/global-ev-outlook-2023/trends-in-batteries"
+      },
+      {
+        "name": "McKinsey — Lithium and Cobalt: A Tale of Two Commodities",
+        "url": "https://www.mckinsey.com/industries/metals-and-mining/our-insights/lithium-and-cobalt"
+      },
+      {
+        "name": "ICCT — US Battery Supply Chain Report 2024",
+        "url": "https://theicct.org/wp-content/uploads/2024/02/ID-85-EV-supply-chain-Report.pdf"
+      },
+      {
+        "name": "IEA — Critical Minerals Outlook 2025",
+        "url": "https://www.iea.org/reports/global-critical-minerals-outlook-2025/executive-summary"
+      },
+      {
+        "name": "Carbon Credits — Lithium Supply 2025",
+        "url": "https://carboncredits.com/lithium-supply-outpaces-demand-for-now-whats-ahead/"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "cat": "Carbon Fiber / Composites",
+    "comp": "Carbon Fiber Prepreg — Drone Fuselage, Wings, Tail",
+    "years": "2021–2023, 2026 (price hike)",
+    "sev": "High",
+    "status": "Partial",
+    "causes": [
+      "Aerospace production ramp post-COVID created sudden demand surge",
+      "Wind energy sector consuming record CF volumes for blade manufacturing",
+      "COVID-19 shut aerospace demand in 2020, causing CF producers to cut capacity — then demand returned faster than capacity could scale",
+      "PAN precursor raw material supply tight (acrylonitrile from petrochemical chain)",
+      "New CF line takes 2+ years to build and commission",
+      "Toray announced 10–20% global price increase effective January 2026"
+    ],
+    "summary": "The carbon fiber market faced a forecast shortfall of 55,000 MT by 2026 (CompositesWorld analysis). Aerospace programs faced lead times exceeding 12 months for high-modulus grades. Supply is dominated by 4 companies (Toray, Hexcel, Teijin, SGL Carbon/Mitsubishi), making the market highly concentrated. The COVID crash (2020) caused CF producers to idle capacity; when aerospace and wind energy recovered simultaneously in 2021–2022, supply was caught short. Toray's January 2026 global price increase of 10–20% will raise costs for all UAV composite structures.",
+    "lt_impact": true,
+    "lt_baseline": "2–4 wks (standard grades)",
+    "lt_peak": "12–18 months for high-modulus aerospace grades; allocation priority given to Boeing/Airbus over smaller UAV OEMs",
+    "lt_pct": 75,
+    "lt_label": "UAV OEMs pushed to back of queue behind aerospace primes",
+    "price_impact": true,
+    "price_baseline": "$80–$200/kg prepreg",
+    "price_peak": "$180–$380/kg (2022 peak, +40–80%); Toray 2026 increase: +10–20%",
+    "price_pct": 60,
+    "companies": [
+      {
+        "name": "Toray Industries",
+        "action": "Acquired TenCate Advanced Composites (Netherlands) in July 2021 for ~$1B to expand aerospace prepreg portfolio. Expanding Decatur, Alabama plant (+5,000 tons by 2027). Raised prices 10–20% globally effective January 2026."
+      },
+      {
+        "name": "Hexcel Corporation",
+        "action": "Signed long-term agreement with Boeing for next-gen aircraft. Expanding Salt Lake City facility for 787/A350 wing spars. Designated authorized distributors (Coast-Line International in CA) for UAV market to manage allocation."
+      },
+      {
+        "name": "Mitsubishi Chemical Group",
+        "action": "Announced $300M program to double CF output by 2027, centered on lower-temperature PAN precursor lines in Japan and Germany. Developing 15–20% energy-reduction process."
+      },
+      {
+        "name": "SGL Carbon",
+        "action": "Expanding into automotive and industrial CF applications to diversify from aerospace — reducing price pressure in aerospace-grade supply by not competing on volume."
+      },
+      {
+        "name": "Aerospace OEMs (Boeing/Airbus)",
+        "action": "Signed multi-year supply agreements locking in CF allocations before UAV/drone manufacturers could access them. This 'crowded out' smaller buyers."
+      },
+      {
+        "name": "UAV / Drone OEMs",
+        "action": "Qualified lower-grade CF alternatives for non-structural parts. Shifted secondary structures to fiberglass-CF hybrid composites. Some switched to Chinese CF suppliers (Zhongfu Shenying) despite quality and geo-risk concerns."
+      }
+    ],
+    "resolution": {
+      "status": "Partial",
+      "text": "Standard-modulus CF supply normalized by 2024 as new capacity from Zoltek, Hyosung, and DowAksa came online. However, high-performance intermediate/high-modulus grades (used in UAV airframes) remain tight — only Toray, Hexcel, and Teijin produce these at scale. Toray's January 2026 price increase signals the market remains a seller's market. Long-term: Chinese CF producers (Zhongfu Shenying, Jiangsu Hengshen) are aggressively scaling capacity, potentially disrupting Western suppliers' pricing power by 2028–2030."
+    },
+    "sources": [
+      {
+        "name": "CompositesWorld — CF Supply and Demand Outlook 2021",
+        "url": "https://www.compositesworld.com/articles/the-outlook-for-carbon-fiber-supply-and-demand"
+      },
+      {
+        "name": "Carbon Fiber Material — 2026 NA Price Hike",
+        "url": "https://www.carbonfibermaterial.com/north-america-carbon-fiber-price-hike-2026"
+      },
+      {
+        "name": "Emergen Research — Carbon Fiber Market",
+        "url": "https://www.emergenresearch.com/industry-report/carbon-fiber-market"
+      },
+      {
+        "name": "Mordor Intelligence — Carbon Fiber Market 2035",
+        "url": "https://www.mordorintelligence.com/industry-reports/carbon-fiber-market"
+      },
+      {
+        "name": "Hexcel — UAV Market Page",
+        "url": "https://hexcel.com/Markets/Space-and-Defense/UAVmarket"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "cat": "Battery / Raw Materials",
+    "comp": "Cobalt — Battery Cells (LiPo/NMC UAV Batteries)",
+    "years": "2017–2018, 2021–2022",
+    "sev": "High",
+    "status": "Partial",
+    "causes": [
+      "65%+ of global cobalt from DRC — political instability, artisanal mining risks",
+      "EV boom created sudden demand spike — cobalt is a by-product of copper/nickel mines",
+      "Investor speculation amplified price swings",
+      "Child labor scandals forced ESG-driven supply chain reviews"
+    ],
+    "summary": "Cobalt is a critical component of NMC (lithium nickel manganese cobalt) batteries used in UAV applications. Its price rose from $30,000/ton in early 2020 to $80,000/ton by April 2022 (+167%). The DRC produces 65%+ of global cobalt — and supply is a byproduct of copper/nickel mining, giving producers limited ability to surge output independently.",
+    "lt_impact": false,
+    "lt_baseline": "N/A (raw material)",
+    "lt_peak": "N/A",
+    "lt_pct": 0,
+    "lt_label": "Price risk, not lead time",
+    "price_impact": true,
+    "price_baseline": "$30,000/ton (2020)",
+    "price_peak": "$80,000/ton (April 2022) = +167%; peaked earlier at $95,000/ton in 2018",
+    "price_pct": 75,
+    "companies": [
+      {
+        "name": "Tesla",
+        "action": "Developed LFP (lithium iron phosphate) cells — no cobalt required. Standard Range Model 3 and Model Y switched to LFP. Reduced cobalt exposure by 76% across fleet."
+      },
+      {
+        "name": "CATL (China)",
+        "action": "Developed sodium-ion battery as a cobalt-free alternative. Aggressively expanded NMC811 (lower cobalt content: 8 parts nickel, 1 cobalt, 1 manganese ratio) vs. older NMC111."
+      },
+      {
+        "name": "Grepow / Tattu (UAV batteries)",
+        "action": "Shifted UAV premium line toward NMC811 semi-solid-state cells to reduce cobalt per kWh. Standard UAV packs still use NMC532/622 — still cobalt-dependent."
+      },
+      {
+        "name": "Apple / Samsung",
+        "action": "Signed direct cobalt purchasing agreements with Glencore (Switzerland) to bypass spot market. Launched auditing programs of DRC artisanal mines for ESG compliance."
+      }
+    ],
+    "resolution": {
+      "status": "Partial",
+      "text": "Cobalt prices fell back to ~$15,000–$30,000/ton range by 2024 as new nickel projects in Indonesia (which produce cobalt as byproduct) came online. NMC811 chemistry adoption is reducing per-battery cobalt demand. However, structural dependence on DRC remains (65%+ of mining), and DRC export quotas (announced 2024) represent a recurring risk. Drone battery manufacturers should note: even LFP batteries use graphite anodes, which have their own China concentration risk (90%+ of refined graphite)."
+    },
+    "sources": [
+      {
+        "name": "McKinsey — Lithium and Cobalt: A Tale of Two Commodities",
+        "url": "https://www.mckinsey.com/industries/metals-and-mining/our-insights/lithium-and-cobalt"
+      },
+      {
+        "name": "RMIS EU — Lithium-based Battery Supply Chain Challenges",
+        "url": "https://rmis.jrc.ec.europa.eu/analysis-of-supply-chain-challenges-49b749"
+      },
+      {
+        "name": "Addionics — Battery Price Analysis 2022",
+        "url": "https://addionics.com/blog/could-rising-battery-prices-slow-down-the-ev-revolution"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "cat": "GNSS / Sensors",
+    "comp": "GNSS Modules (u-blox, image sensors) — Navigation & Vision",
+    "years": "2021–2023",
+    "sev": "High",
+    "status": "Partial",
+    "causes": [
+      "All GNSS modules rely on semiconductor chipsets — hit by same MCU shortage",
+      "Image sensors (Sony IMX, OmniVision) fabricated at TSMC — allocated to smartphones first",
+      "u-blox impacted by factory closures at contract manufacturers in 2021",
+      "Drone vision systems competed with automotive ADAS cameras for sensor supply"
+    ],
+    "summary": "u-blox, the dominant GNSS module supplier for UAVs, was directly impacted by semiconductor factory closures in 2021. The company explicitly reported being 'notably affected by factory closures and semiconductor shortages in 2021.' Image sensors for drone vision (Sony IMX series, ON Semiconductor AR0234) hit lead times of 16–28 weeks as TSMC allocated wafer capacity to smartphones and automotive. GNSS modules that were typically available in 2–4 weeks extended to 10–20 weeks during peak shortage.",
+    "lt_impact": true,
+    "lt_baseline": "2–6 wks (GNSS modules)",
+    "lt_peak": "10–20 wks GNSS modules; 16–28 wks image sensors",
+    "lt_pct": 65,
+    "lt_label": "Significant — doubled or tripled from baseline",
+    "price_impact": true,
+    "price_baseline": "$35–$200/module",
+    "price_peak": "10–40% spot price increases on GNSS modules; image sensor spot market premiums 20–50%",
+    "price_pct": 45,
+    "companies": [
+      {
+        "name": "u-blox AG",
+        "action": "Increased inventory buffer at authorized distributors. Launched LARA-L6 (2022), smallest LTE Cat 1bis module, to diversify product line while managing MCU shortages. Focused on module-level integration to reduce number of chipsets per product."
+      },
+      {
+        "name": "Sony Semiconductor",
+        "action": "Prioritized IMX series capacity for flagship smartphone customers (Apple). Drone/UAV customers were secondary. Announced expanded fab investment in Kumamoto (Japan) with TSMC partnership."
+      },
+      {
+        "name": "OmniVision",
+        "action": "Engaged additional foundry partners beyond TSMC to diversify manufacturing. Offered extended lead time commitments to industrial customers in exchange for forecast commitments."
+      },
+      {
+        "name": "Drone OEMs",
+        "action": "Designed in alternate GNSS modules (Beitian, CUAV) as second-source during shortage — accepting lower accuracy in exchange for availability. Some held 6-month safety stock of GNSS modules."
+      }
+    ],
+    "resolution": {
+      "status": "Partial",
+      "text": "GNSS module lead times normalized to 4–12 weeks by late 2023. Image sensor availability improved as TSMC expanded 12nm/16nm capacity. However, high-precision GNSS modules (u-blox ZED-F9P series for RTK) remain constrained at 10–18 weeks due to specialized chipset requirements. The structural issue remains: virtually all GNSS modules depend on chipsets from one of a handful of companies (u-blox, Qualcomm, STMicro) fabricated predominantly at TSMC."
+    },
+    "sources": [
+      {
+        "name": "IoT Business News — Cellular IoT Module Market Update",
+        "url": "https://iotbusinessnews.com/2023/01/25/06155-cellular-iot-module-market-update/"
+      },
+      {
+        "name": "Accio — u-blox Module Pricing and MOQ Data",
+        "url": "https://www.accio.com/plp/u-blox-gnss-module"
+      },
+      {
+        "name": "Wikipedia — Global Chip Shortage",
+        "url": "https://en.wikipedia.org/wiki/2020%E2%80%932023_global_chip_shortage"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "cat": "LTE / Communication",
+    "comp": "LTE / 4G Cellular Modules — C2 Datalink for BVLOS",
+    "years": "2021–2022",
+    "sev": "Medium",
+    "status": "Resolved",
+    "causes": [
+      "Qualcomm MDM9207 chipset (dominant LTE Cat 1 chip) severely constrained",
+      "HiSilicon (Huawei subsidiary) cut off from TSMC by US sanctions — created gap that Chinese alternatives couldn't immediately fill",
+      "Sierra Wireless and u-blox both hit by semiconductor shortages at contract manufacturers",
+      "20 million cellular IoT chipsets short in 2021 (IoT Analytics estimate)"
+    ],
+    "summary": "LTE module lead times extended from 4–8 weeks to 16–30 weeks during 2021–2022 as the underlying Qualcomm chipsets faced severe allocation pressure. Sierra Wireless and u-blox — two key suppliers for UAV C2 links — were notably impacted. The HiSilicon sanction created a gap in NB-IoT chip supply (formerly HiSilicon had dominant market share) that took 12–18 months for Chinese alternatives (Eigencomm, UNISOC) to fill. BVLOS drone operators faced supply constraints on their primary command link hardware.",
+    "lt_impact": true,
+    "lt_baseline": "4–8 wks",
+    "lt_peak": "16–30 wks (2021 peak)",
+    "lt_pct": 55,
+    "lt_label": "Extended significantly — BVLOS scaling impacted",
+    "price_impact": true,
+    "price_baseline": "$60–$200/module",
+    "price_peak": "15–25% spot premium on allocated modules; gray market at 2–3× list price",
+    "price_pct": 35,
+    "companies": [
+      {
+        "name": "Sierra Wireless",
+        "action": "Increased buffer inventory commitments. Launched RV55 and EM919x next-gen modules to reduce complexity. Acquired by Semtech in 2023 for $1.2B, gaining access to broader semiconductor supply chain relationships."
+      },
+      {
+        "name": "u-blox",
+        "action": "Accelerated multi-vendor chipset qualification to reduce Qualcomm dependency. SARA-R4 and LARA-R6 series designed for 'chipset flexibility' to switch between Qualcomm, Sony, and Sequans."
+      },
+      {
+        "name": "Quectel Wireless",
+        "action": "Benefited most from shortage — Chinese domestic supply chain allowed faster recovery. EC21/EC25 remained available when Western equivalents were allocated. Grew to 40% global module market share by 2021."
+      },
+      {
+        "name": "BVLOS Drone Operators",
+        "action": "Maintained 4–6 month buffer stocks of LTE modules. Some switched to RF-primary (Microhard pDDL900) with LTE as backup to reduce LTE module consumption per drone."
+      }
+    ],
+    "resolution": {
+      "status": "Resolved",
+      "text": "LTE module markets normalized by mid-2022 as the broader semiconductor supply improved. Quectel's expanded capacity and UNISOC/Eigencomm's rise as alternative chipset vendors filled the gap left by HiSilicon. By 2023, module lead times returned to 8–14 weeks standard. Current risk: Quectel's NDAA non-compliance (China-based) means US BVLOS operators are switching to Sierra Wireless/u-blox anyway — creating new supply concentration risk around fewer NDAA-compliant suppliers."
+    },
+    "sources": [
+      {
+        "name": "IoT Analytics — 20M Cellular IoT Chips Missing 2021",
+        "url": "https://iot-analytics.com/cellular-iot-chipset-market-2021/"
+      },
+      {
+        "name": "IoT Business News — Cellular Module Market 2022",
+        "url": "https://iotbusinessnews.com/2022/02/04/cellular-iot-module-market-strong-demand"
+      },
+      {
+        "name": "Inside Unmanned Systems — Rebuilding the Supply Chain",
+        "url": "https://insideunmannedsystems.com/rebuilding-the-supply-chain/"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "cat": "Propulsion / Motors",
+    "comp": "Brushless DC Motors & ESCs — Chinese Supply Concentration",
+    "years": "2019–present (NDAA risk); 2025 (tariff shock)",
+    "sev": "High",
+    "status": "Ongoing",
+    "causes": [
+      "China produces 70%+ of global brushless drone motors (T-Motor dominant)",
+      ">60% of global ESC production in China (Hobbywing dominant)",
+      "Section 848 NDAA restricts Chinese-origin motors/ESCs for US government programs",
+      "FCC Covered List (Dec 2025) expanded restrictions to cover components",
+      "US 145% tariff (April 2025) on Chinese electronics raised import costs",
+      "Rare earth magnet dependency within Chinese motor supply chains"
+    ],
+    "summary": "The drone motor and ESC supply chain is heavily concentrated in China, with T-Motor and Hobbywing dominating globally. For Zipline specifically, operating in the US market with BVLOS FAA approvals, this creates both regulatory risk (NDAA Section 848 restricts Chinese-origin components for US government programs) and potential supply disruption risk if US-China tariffs or export controls escalate. The April 2025 145% tariff on Chinese electronics would add $60–$200 per motor if applied to drone motors (some exemptions exist). US alternatives (KDE Direct, NeuMotors) exist but at 2–3× the price.",
+    "lt_impact": true,
+    "lt_baseline": "3–6 wks (China suppliers)",
+    "lt_peak": "8–16 wks during COVID lockdowns in China (2022); indefinite if NDAA enforcement tightens",
+    "lt_pct": 50,
+    "lt_label": "Moderate today — severe if regulatory escalation",
+    "price_impact": true,
+    "price_baseline": "$60–$280/motor (T-Motor)",
+    "price_peak": "US-made alternatives (KDE Direct): $120–$450/motor = 2–3× premium; +25% tariff risk on Chinese imports",
+    "price_pct": 70,
+    "companies": [
+      {
+        "name": "KDE Direct (USA)",
+        "action": "Positioned as NDAA-compliant alternative to T-Motor. Dual manufacturing in US and abroad. Markets explicitly to government-adjacent customers. IP56 rated, industrial-grade. 2× price premium justified by compliance."
+      },
+      {
+        "name": "Inspired Flight Technologies",
+        "action": "Built US drone platform using KDE Direct and NeuMotors. NDAA-compliant, Blue UAS certified. CEO Rick Stollmeyer: 'noticed improvements in ESCs and onboard compute but still a long way to go.'"
+      },
+      {
+        "name": "Unusual Machines (USA)",
+        "action": "US drone motor startup scaling NDAA-compliant motor production. Acquired Rotor Riot (FPV retailer) to build domestic component distribution. Public company (NYSE: UMAC) — supply chain transparency."
+      },
+      {
+        "name": "T-Motor (China)",
+        "action": "Launched 'NDAA-light' strategies (partner assembly in non-China countries) but core manufacturing remains China-based. Dominant in non-US/non-government markets."
+      },
+      {
+        "name": "Hobbywing (China)",
+        "action": "Showcased VTOL ESC systems at Drone Show Korea 2026. Focused on industrial UAV customers outside NDAA-constrained US government sector. FOC technology class-leading but non-compliant."
+      }
+    ],
+    "resolution": {
+      "status": "Ongoing",
+      "text": "No near-term resolution. NDAA enforcement tightened as of December 22, 2025 (American Security Drone Act full enforcement). Chinese motor/ESC suppliers cannot easily become NDAA-compliant without relocating manufacturing, which is a multi-year effort. US domestic motor capacity (KDE Direct, NeuMotors, Unusual Machines) is growing but insufficient to replace Chinese supply at scale for several years. Zipline's best mitigation: dual-qualify US-made motors as primary (NDAA-safe) and Chinese motors as backup (for non-US programs only)."
+    },
+    "sources": [
+      {
+        "name": "Inside Unmanned Systems — Rebuilding the Supply Chain 2026",
+        "url": "https://insideunmannedsystems.com/rebuilding-the-supply-chain/"
+      },
+      {
+        "name": "CSIS — Drone Supply Chain War",
+        "url": "https://www.csis.org/analysis/drone-supply-chain-war"
+      },
+      {
+        "name": "FlightBrief — NDAA Compliant Drones Guide 2026",
+        "url": "https://flightbrief.news/guides/ndaa-compliant-drones-guide/"
+      },
+      {
+        "name": "Drone Motor Market Report — Kings Research",
+        "url": "https://www.kingsresearch.com/drone-motor-market-1085"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "cat": "General Supply Chain",
+    "comp": "Global Shipping / Logistics — All Components",
+    "years": "2020–2022",
+    "sev": "Medium",
+    "status": "Resolved",
+    "causes": [
+      "COVID-19 port closures (especially China, South Korea, US West Coast)",
+      "Container ship shortage — carriers repositioned to high-volume routes",
+      "Suez Canal blockage (Ever Given, March 2021) — 6 days, $9.6B/day global trade impact",
+      "Trucking driver shortage in US (50,000+ driver deficit in 2021)",
+      "Port of LA/Long Beach congestion — 100+ ships waiting offshore in Oct 2021",
+      "LA dockworkers labor disputes adding delays into 2022–2023"
+    ],
+    "summary": "Global logistics collapsed simultaneously in 2020–2022. Air freight rates from China to US West Coast rose from $3–4/kg to $12–15/kg (+300%). Ocean freight container rates (Shanghai–LA) rose from $2,000 in early 2020 to $25,000+ per 40ft container by Sept 2021 (+1,100%). Transit times doubled. For drone components shipped from China, air freight lead times went from 5–7 days to 14–21 days. Ground drayage from LAX/SFO port added another 1–2 weeks.",
+    "lt_impact": true,
+    "lt_baseline": "Air: 5–7 days China→SF; Ocean: 25–35 days",
+    "lt_peak": "Air: 14–21 days (+200%); Ocean: 50–70 days (+100%); port dwell added 7–14 additional days",
+    "lt_pct": 70,
+    "lt_label": "Doubled for air; tripled cost for ocean",
+    "price_impact": true,
+    "price_baseline": "Air freight: $3–4/kg; Ocean: $2,000/container",
+    "price_peak": "Air freight: $12–15/kg (+300%); Ocean: $25,000/container (+1,100%)",
+    "price_pct": 80,
+    "companies": [
+      {
+        "name": "Amazon",
+        "action": "Leased 40+ cargo aircraft to create its own air freight network (Amazon Air). Bypassed congested commercial freight channels. Built US logistics infrastructure."
+      },
+      {
+        "name": "Tesla",
+        "action": "Chartered dedicated cargo planes for critical semiconductor shipments. Paid significant premium but maintained production continuity."
+      },
+      {
+        "name": "Apple",
+        "action": "Prioritized air freight for all semiconductor shipments regardless of cost. Built 6–12 month buffer inventory for critical components as direct response."
+      },
+      {
+        "name": "DJI (drone OEM)",
+        "action": "Maintained large buffer inventory at US distribution center (Carson, CA) to absorb shipping delays. Faced additional customs delays from UFLA (Uyghur Forced Labor Prevention Act) CBP holds."
+      },
+      {
+        "name": "Small UAV OEMs",
+        "action": "Shifted from JIT (just-in-time) to safety stock model. Moved critical component orders to DDP (delivered duty paid) Incoterms to transfer logistics complexity to suppliers. Established US buffer warehouses."
+      }
+    ],
+    "resolution": {
+      "status": "Resolved",
+      "text": "Global shipping rates normalized by late 2022–2023 as demand fell with economic slowdown and port congestion cleared. Container rates returned to $2,000–$4,000/container range. Air freight stabilized at $4–6/kg China→US. However, Red Sea crisis (2024) and Panama Canal water level crisis (2024) caused brief spikes. The structural lesson: JIT supply chains for drone components are inadequate — minimum 8–12 weeks of safety stock at US warehouse is the new industry standard."
+    },
+    "sources": [
+      {
+        "name": "Wikipedia — Suez Canal blockage (Ever Given)",
+        "url": "https://en.wikipedia.org/wiki/2021_Suez_Canal_obstruction"
+      },
+      {
+        "name": "WEF — Semiconductor Supply Chain 2022",
+        "url": "https://www.weforum.org/stories/2022/02/semiconductor-chip-shortage-supply-chain/"
+      },
+      {
+        "name": "Inside Unmanned Systems — UAV Supply Chain",
+        "url": "https://insideunmannedsystems.com/rebuilding-the-supply-chain/"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "cat": "MCU / Semiconductor",
+    "comp": "Neon Gas — Chip Manufacturing Input",
+    "years": "2022 (Ukraine War)",
+    "sev": "High",
+    "status": "Partial",
+    "causes": [
+      "Ukraine produces ~50% of global semiconductor-grade neon (byproduct of Russian steel industry)",
+      "Russia's invasion of Ukraine in February 2022 cut neon supply",
+      "Neon is used in excimer lasers for lithography in chip manufacturing — no substitute",
+      "Price spiked 6× in 3 months; semiconductor fabs began rationing"
+    ],
+    "summary": "Ukraine produces approximately 50% of the world's semiconductor-grade neon gas, which is essential for laser lithography in chip manufacturing. Russia's invasion of Ukraine in February 2022 immediately threatened this supply. Neon prices rose 6× between December 2021 and March 2022. While chip fabs had 1–3 month neon stockpiles, a prolonged supply cut would have shut down fabrication lines. This risk directly affects all MCU, IMU, GNSS chipset, and image sensor production that feeds into drone components.",
+    "lt_impact": true,
+    "lt_baseline": "N/A (feedstock)",
+    "lt_peak": "If sustained >3 months: estimated 30–50% reduction in global chip output within 6 months",
+    "lt_pct": 60,
+    "lt_label": "Systemic risk to all semiconductor supply",
+    "price_impact": true,
+    "price_baseline": "~$500/m³ neon",
+    "price_peak": "$3,000+/m³ (+500%) in March 2022",
+    "price_pct": 80,
+    "companies": [
+      {
+        "name": "TSMC",
+        "action": "Disclosed 2–3 month neon inventory buffer. Accelerated qualification of alternative neon suppliers in Australia, Canada, and Poland. Invested in neon recycling and purification systems at fabs."
+      },
+      {
+        "name": "Intel",
+        "action": "Diversified gas suppliers before the crisis. Partnered with specialty gas companies to pre-position inventory. Continued Arizona and Ohio fab construction despite gas risks."
+      },
+      {
+        "name": "South Korea chipmakers (SK Hynix, Samsung)",
+        "action": "Drew from 2010 Japan embargo lesson — already built strategic stockpiles and diversified gas sourcing after 2010. Had broader supplier base and 6+ month neon reserves."
+      },
+      {
+        "name": "US Government",
+        "action": "Added neon to critical materials monitoring list. Funded TSMC Arizona and Intel Ohio fabs partly to reduce foreign-dependency for semiconductor-grade gases."
+      }
+    ],
+    "resolution": {
+      "status": "Partial",
+      "text": "Acute crisis resolved as fabs drew down stockpiles and diversified to Australian, Canadian, and East European neon suppliers. South Korea increased domestic neon production. By late 2022, neon prices fell back to $600–800/m³. However, the underlying fragility remains — semiconductor gas supply chains are highly specialized and geographically concentrated. The helium shortage of March 2026 (Qatar Ras Laffan drone attack) is the latest example of this category of risk."
+    },
+    "sources": [
+      {
+        "name": "Wikipedia — Global Chip Shortage: Ukraine neon supply",
+        "url": "https://en.wikipedia.org/wiki/2020%E2%80%932023_global_chip_shortage"
+      },
+      {
+        "name": "TechSpot — Drone Strikes Halt Helium Supply (2026)",
+        "url": "https://www.techspot.com/news/111683-critical-semiconductor-gas-lost-third-global-supply-drone.html"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "cat": "Battery / Raw Materials",
+    "comp": "Graphite — Battery Anode Material",
+    "years": "2023–2025 (ongoing export controls)",
+    "sev": "High",
+    "status": "Ongoing",
+    "causes": [
+      "China controls 90%+ of refined battery-grade graphite production",
+      "China implemented export licensing requirements for graphite in October 2023",
+      "US-China trade war 2025: graphite restrictions under active policy review",
+      "Synthetic graphite capacity expansion needed — 2–3 year timeline to bring online"
+    ],
+    "summary": "China controls over 90% of global refined graphite production — the material used in the anodes of virtually all lithium-ion batteries (including UAV LiPo packs). In October 2023, China implemented export licensing requirements for graphite products targeting defense and high-technology sectors. This directly affects all lithium-ion battery supply chains, including UAV batteries. A 30% graphite supply deficit is projected by 2030 without new investment. US and Japanese battery manufacturers are scrambling to develop alternative anode materials (silicon, sodium-ion).",
+    "lt_impact": true,
+    "lt_baseline": "N/A (raw material)",
+    "lt_peak": "Battery manufacturing delays of 4–12 weeks if graphite allocation tightens",
+    "lt_pct": 50,
+    "lt_label": "Latent risk — not yet acute for standard UAV packs",
+    "price_impact": true,
+    "price_baseline": "$10,000–15,000/ton battery-grade graphite",
+    "price_peak": "20–40% projected increase if export controls tighten; spot prices elevated 2023–2025",
+    "price_pct": 50,
+    "companies": [
+      {
+        "name": "Panasonic / CATL",
+        "action": "Investing in synthetic graphite production outside China. CATL developing sodium-ion batteries (no graphite anode) — mass production targeted for 2025–2027."
+      },
+      {
+        "name": "Tesla",
+        "action": "Developing silicon-dominant anode technology to reduce graphite dependency. 4680 cell design reduces graphite content per kWh vs. 2170 cells."
+      },
+      {
+        "name": "US Government",
+        "action": "IRA funding for domestic graphite processing. DOE loan to Anovion (synthetic graphite, New York) for domestic production. Section 45X tax credits for graphite production."
+      },
+      {
+        "name": "Grepow / Tattu (UAV batteries)",
+        "action": "No confirmed alternative anode strategy disclosed publicly. UAV battery makers are secondary priority in raw material allocation behind automotive OEMs. Strategic risk for Zipline."
+      }
+    ],
+    "resolution": {
+      "status": "Ongoing",
+      "text": "No resolution in sight. China's graphite dominance is structural (geological + industrial concentration). US-China graphite trade agreement in late 2025 provided temporary stability, but 2025 tariffs reignited uncertainty. IEA projects graphite supply deficit beyond 2029 for all battery applications combined. Zipline mitigation: specify battery suppliers who can demonstrate non-China graphite sourcing or have inventory buffers for 6–12 months."
+    },
+    "sources": [
+      {
+        "name": "PatentPC — Battery Supply Chain Disruptions",
+        "url": "https://patentpc.com/blog/battery-supply-chain-disruptions"
+      },
+      {
+        "name": "IEA — Critical Minerals Outlook 2025",
+        "url": "https://www.iea.org/reports/global-critical-minerals-outlook-2025/executive-summary"
+      },
+      {
+        "name": "RMIS EU — Lithium Battery Supply Chain",
+        "url": "https://rmis.jrc.ec.europa.eu/analysis-of-supply-chain-challenges-49b749"
+      },
+      {
+        "name": "Fastmarkets — Battery Raw Materials Update 2025",
+        "url": "https://www.fastmarkets.com/metals-and-mining/battery-raw-materials/brm-monthly-market-update-2025/"
+      }
+    ]
+  }
+]

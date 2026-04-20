@@ -1,4 +1,4 @@
-window.BASE_ROWS = [
+[
   {
     "id": "AF-01",
     "component": "Carbon fiber composite fuselage",
@@ -17,7 +17,10 @@ window.BASE_ROWS = [
     "priority_score": 9.2,
     "recommendation": "Monitor",
     "note": "Inner structural frame; proprietary layup used by Zipline. Kevlar-reinforced section per EFC source.",
-    "supplier_preview": "Toray Composite Materials America, Hexcel Corporation, DragonPlate (Allred & Associates) +3 more"
+    "supplier_preview": "Toray Composite Materials America, Hexcel Corporation, DragonPlate (Allred & Associates) +3 more",
+    "bom_pct": 6.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 1
   },
   {
     "id": "AF-02",
@@ -37,7 +40,10 @@ window.BASE_ROWS = [
     "priority_score": 2.2,
     "recommendation": "Monitor",
     "note": "Frangible outer body designed to break on impact to absorb energy. Standard EPS foam.",
-    "supplier_preview": "Universal Forest Products, Radva Corporation, Styrochem International"
+    "supplier_preview": "Universal Forest Products, Radva Corporation, Styrochem International",
+    "bom_pct": 2.0,
+    "price_volatility_score": 2,
+    "single_source_exposure": 3
   },
   {
     "id": "AF-03",
@@ -57,7 +63,10 @@ window.BASE_ROWS = [
     "priority_score": 9.2,
     "recommendation": "Monitor",
     "note": "11 ft wingspan on P1. Provides aerodynamic lift during cruise. Ailerons integrated.",
-    "supplier_preview": "Toray Composite Materials America, Teijin Carbon America, Solvay Composite Materials +1 more"
+    "supplier_preview": "Toray Composite Materials America, Teijin Carbon America, Solvay Composite Materials +1 more",
+    "bom_pct": 6.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 2
   },
   {
     "id": "AF-04",
@@ -77,7 +86,10 @@ window.BASE_ROWS = [
     "priority_score": 10.0,
     "recommendation": "Monitor",
     "note": "Horizontal stabilizer (pitch control) and vertical stabilizer (yaw). Carbon fiber/composite.",
-    "supplier_preview": "Protech Composites, DragonPlate, CRP Technology (CRP USA)"
+    "supplier_preview": "Protech Composites, DragonPlate, CRP Technology (CRP USA)",
+    "bom_pct": 6.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 3
   },
   {
     "id": "AF-05",
@@ -97,7 +109,10 @@ window.BASE_ROWS = [
     "priority_score": 9.2,
     "recommendation": "Monitor",
     "note": "Moves ailerons, elevator, rudder. P1 confirmed dual redundant servo linkages.",
-    "supplier_preview": "Hitec RCD (Servoland), Futaba Corporation, MKS Servos USA +2 more"
+    "supplier_preview": "Hitec RCD (Servoland), Futaba Corporation, MKS Servos USA +2 more",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 2
   },
   {
     "id": "AF-06",
@@ -117,7 +132,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Mechanical linkages from servo to control surface. Aluminum or carbon fiber rods.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 4.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": null
   },
   {
     "id": "AF-07",
@@ -137,7 +155,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Separate sub-vehicle housed in P2 Zip belly. Styrofoam + carbon fiber per MKBHD/IEEE Spectrum.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": null
   },
   {
     "id": "PR-01",
@@ -157,7 +178,10 @@ window.BASE_ROWS = [
     "priority_score": 9.2,
     "recommendation": "Monitor",
     "note": "P1 uses 2 motors for redundancy — can fly on single motor. Key supply chain risk item.",
-    "supplier_preview": "KDE Direct, T-Motor (Nanchang), NeuMotors +3 more"
+    "supplier_preview": "KDE Direct, T-Motor (Nanchang), NeuMotors +3 more",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 1
   },
   {
     "id": "PR-02",
@@ -177,7 +201,10 @@ window.BASE_ROWS = [
     "priority_score": 6.8,
     "recommendation": "Monitor",
     "note": "One ESC per motor. Regulates power from battery to motor. Independent per motor for redundancy.",
-    "supplier_preview": "Hobbywing Technology, Castle Creations, T-Motor (ESC line) +3 more"
+    "supplier_preview": "Hobbywing Technology, Castle Creations, T-Motor (ESC line) +3 more",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 1
   },
   {
     "id": "PR-03",
@@ -197,7 +224,10 @@ window.BASE_ROWS = [
     "priority_score": 8.7,
     "recommendation": "Dual-source candidate",
     "note": "Converts rotational motion to thrust. Two-blade folding type typical for fixed-wing cruise efficiency.",
-    "supplier_preview": "KDE Direct (CF Propellers), T-Motor Propellers, APC Propellers +1 more"
+    "supplier_preview": "KDE Direct (CF Propellers), T-Motor Propellers, APC Propellers +1 more",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 2
   },
   {
     "id": "PR-04",
@@ -217,7 +247,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Articulating propellers for vertical hover and transition flight on P2 platform.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": null
   },
   {
     "id": "PR-05",
@@ -237,7 +270,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Thrusters on the Droid for precision positioning in wind during descent. Multi-axis.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": null
   },
   {
     "id": "PR-06",
@@ -257,7 +293,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Structural mounts for motors on airframe. Carbon fiber or aluminum.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": null
   },
   {
     "id": "PW-01",
@@ -277,7 +316,10 @@ window.BASE_ROWS = [
     "priority_score": 10.8,
     "recommendation": "Dual-source candidate",
     "note": "Two interchangeable batteries on P1 per EFC. Quick-swap design for rapid turnaround. High geo risk (China-sourced cells).",
-    "supplier_preview": "Grepow / Tattu (Shenzhen), MaxAmps Lithium Batteries, Epec Engineered Technologies +3 more"
+    "supplier_preview": "Grepow / Tattu (Shenzhen), MaxAmps Lithium Batteries, Epec Engineered Technologies +3 more",
+    "bom_pct": 18.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": 1
   },
   {
     "id": "PW-02",
@@ -297,7 +339,10 @@ window.BASE_ROWS = [
     "priority_score": 6.8,
     "recommendation": "Monitor",
     "note": "Monitors cell voltage, temperature, state of charge. Embedded in or paired with battery pack.",
-    "supplier_preview": "Texas Instruments, Analog Devices (ADI), Digi-Key (distributor — TI/ADI) +1 more"
+    "supplier_preview": "Texas Instruments, Analog Devices (ADI), Digi-Key (distributor — TI/ADI) +1 more",
+    "bom_pct": 18.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": 2
   },
   {
     "id": "PW-03",
@@ -317,7 +362,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Distributes power from battery to ESCs, flight controller, avionics. Often PCB-integrated.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 4.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": null
   },
   {
     "id": "PW-04",
@@ -337,7 +385,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Steps down voltage for servos, FC, and sensors. Battery eliminator circuit.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 4.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": null
   },
   {
     "id": "PW-05",
@@ -357,7 +408,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Separate battery powering Droid thrusters and sensors during descent/delivery sequence.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 18.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": null
   },
   {
     "id": "AV-01",
@@ -377,7 +431,10 @@ window.BASE_ROWS = [
     "priority_score": 6.8,
     "recommendation": "Monitor",
     "note": "Proprietary ZipNav software; runs on Hercules + Atmel processors per EFC. Custom RTOS (Micrium).",
-    "supplier_preview": "Cubic Defense (custom MCU integration), Auterion (Skynode), Holybro (Pixhawk 6X OEM) +2 more"
+    "supplier_preview": "Cubic Defense (custom MCU integration), Auterion (Skynode), Holybro (Pixhawk 6X OEM) +2 more",
+    "bom_pct": 6.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": 2
   },
   {
     "id": "AV-02",
@@ -397,7 +454,10 @@ window.BASE_ROWS = [
     "priority_score": 6.8,
     "recommendation": "Monitor",
     "note": "Accelerometers + gyroscopes for orientation and stability. Critical for autonomous flight.",
-    "supplier_preview": "InvenSense (TDK), Bosch Sensortec, STMicroelectronics +1 more"
+    "supplier_preview": "InvenSense (TDK), Bosch Sensortec, STMicroelectronics +1 more",
+    "bom_pct": 6.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": 2
   },
   {
     "id": "AV-03",
@@ -417,7 +477,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Altitude estimation. Used in conjunction with GPS. MEMS-based sensor.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 4.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": null
   },
   {
     "id": "AV-04",
@@ -437,7 +500,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Heading reference for navigation. Usually integrated with GPS module.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 4.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": null
   },
   {
     "id": "AV-05",
@@ -457,7 +523,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Critical for fixed-wing stall prevention. Measures differential pressure for True airspeed.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 4.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": null
   },
   {
     "id": "AV-06",
@@ -477,7 +546,10 @@ window.BASE_ROWS = [
     "priority_score": 5.2,
     "recommendation": "Monitor",
     "note": "Hercules (TI) and Atmel MCUs confirmed by EFC. Semiconductor supply chain risk.",
-    "supplier_preview": "Texas Instruments (Hercules), Microchip Technology (Atmel heritage), STMicroelectronics (STM32) +1 more"
+    "supplier_preview": "Texas Instruments (Hercules), Microchip Technology (Atmel heritage), STMicroelectronics (STM32) +1 more",
+    "bom_pct": 6.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": 2
   },
   {
     "id": "NA-01",
@@ -497,7 +569,10 @@ window.BASE_ROWS = [
     "priority_score": 6.8,
     "recommendation": "Monitor",
     "note": "Multi-constellation (GPS + GLONASS) for positioning accuracy. Coordinates logged for delivery routing.",
-    "supplier_preview": "u-blox AG, Trimble (OEM GNSS), Novatel (Hexagon) +3 more"
+    "supplier_preview": "u-blox AG, Trimble (OEM GNSS), Novatel (Hexagon) +3 more",
+    "bom_pct": 6.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": 1
   },
   {
     "id": "NA-02",
@@ -517,7 +592,10 @@ window.BASE_ROWS = [
     "priority_score": 6.8,
     "recommendation": "Monitor",
     "note": "Droid uses visual sensors to identify delivery site, detect obstacles during descent. IEEE Spectrum confirmed.",
-    "supplier_preview": "Sony Semiconductor Solutions, OmniVision Technologies, ON Semiconductor (onsemi) +1 more"
+    "supplier_preview": "Sony Semiconductor Solutions, OmniVision Technologies, ON Semiconductor (onsemi) +1 more",
+    "bom_pct": 6.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": 2
   },
   {
     "id": "NA-03",
@@ -537,7 +615,10 @@ window.BASE_ROWS = [
     "priority_score": 6.8,
     "recommendation": "Monitor",
     "note": "Performs 500 safety checks per second per MKBHD source. Likely lidar or ultrasonic + camera fusion.",
-    "supplier_preview": "Garmin LiDAR-Lite (Acuity), Benewake (TF-series LiDAR), Leddartech +1 more"
+    "supplier_preview": "Garmin LiDAR-Lite (Acuity), Benewake (TF-series LiDAR), Leddartech +1 more",
+    "bom_pct": 6.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": 2
   },
   {
     "id": "NA-04",
@@ -557,7 +638,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Precise altitude for landing and delivery. Laser or ultrasonic type.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 4.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": null
   },
   {
     "id": "NA-05",
@@ -577,7 +661,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Measures tether length and tension during Droid descent. Integrated into P2 Zip belly mechanism.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": null
   },
   {
     "id": "CM-01",
@@ -597,7 +684,10 @@ window.BASE_ROWS = [
     "priority_score": 6.8,
     "recommendation": "Monitor",
     "note": "Primary BVLOS communication link to ground control. Critical for regulatory compliance.",
-    "supplier_preview": "Sierra Wireless (Semtech), Telit Cinterion, u-blox (SARA-R4 / LARA-R6) +2 more"
+    "supplier_preview": "Sierra Wireless (Semtech), Telit Cinterion, u-blox (SARA-R4 / LARA-R6) +2 more",
+    "bom_pct": 6.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": 2
   },
   {
     "id": "CM-02",
@@ -617,7 +707,10 @@ window.BASE_ROWS = [
     "priority_score": 5.2,
     "recommendation": "Monitor",
     "note": "Backup / redundant data link. 2.4 GHz or 900 MHz band. Real-time telemetry to ground station.",
-    "supplier_preview": "Microhard Systems, FreeWave Technologies, RFD (RFDesign Pty) +1 more"
+    "supplier_preview": "Microhard Systems, FreeWave Technologies, RFD (RFDesign Pty) +1 more",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 2
   },
   {
     "id": "CM-03",
@@ -637,7 +730,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Multiple antennas for LTE and RF links. Blade or patch type.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 4.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": null
   },
   {
     "id": "CM-04",
@@ -657,7 +753,10 @@ window.BASE_ROWS = [
     "priority_score": 6.4,
     "recommendation": "Monitor",
     "note": "FAA-required for BVLOS operations in US. Broadcasts position to manned aircraft.",
-    "supplier_preview": "uAvionix, Sagetech Avionics, Aerobits"
+    "supplier_preview": "uAvionix, Sagetech Avionics, Aerobits",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 3
   },
   {
     "id": "PL-01",
@@ -677,7 +776,10 @@ window.BASE_ROWS = [
     "priority_score": 5.7,
     "recommendation": "Monitor",
     "note": "P1: up to 1.75 kg; P2 Droid: 2.5–3.5 kg. Thermally insulated for vaccine cold-chain delivery.",
-    "supplier_preview": "Pelican Products, Cryopak (Phase change inserts), Sonoco ThermoSafe"
+    "supplier_preview": "Pelican Products, Cryopak (Phase change inserts), Sonoco ThermoSafe",
+    "bom_pct": 3.0,
+    "price_volatility_score": 2,
+    "single_source_exposure": 3
   },
   {
     "id": "PL-02",
@@ -697,7 +799,10 @@ window.BASE_ROWS = [
     "priority_score": 6.4,
     "recommendation": "Monitor",
     "note": "Drops medical package at target zone. 5m diameter landing accuracy. Servo-actuated release.",
-    "supplier_preview": "Fruity Chutes, Butler Parachute Systems, Indemnis (Nexus parachute)"
+    "supplier_preview": "Fruity Chutes, Butler Parachute Systems, Indemnis (Nexus parachute)",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 3
   },
   {
     "id": "PL-03",
@@ -717,7 +822,10 @@ window.BASE_ROWS = [
     "priority_score": 6.4,
     "recommendation": "Monitor",
     "note": "Lowers Droid from Zip at 300 ft altitude. Motor-driven spool with tension control. Core P2 innovation.",
-    "supplier_preview": "Maxon Motor AG, Faulhaber Group, Allied Motion (Allient)"
+    "supplier_preview": "Maxon Motor AG, Faulhaber Group, Allied Motion (Allient)",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 3
   },
   {
     "id": "PL-04",
@@ -737,7 +845,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Maintains cold-chain for vaccines and blood products. Phase-change materials or foam insert.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 3.0,
+    "price_volatility_score": 2,
+    "single_source_exposure": null
   },
   {
     "id": "SF-01",
@@ -757,7 +868,10 @@ window.BASE_ROWS = [
     "priority_score": 6.4,
     "recommendation": "Monitor",
     "note": "Deployed on catastrophic failure. Confirmed on P1 (EFC). Last-resort safe descent for 20 kg drone.",
-    "supplier_preview": "Indemnis, Fruity Chutes, Drone Rescue Systems"
+    "supplier_preview": "Indemnis, Fruity Chutes, Drone Rescue Systems",
+    "bom_pct": 5.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 3
   },
   {
     "id": "SF-02",
@@ -777,7 +891,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Independent backup flight hardware on both drone and ground servers per EFC source.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 6.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": null
   },
   {
     "id": "SF-03",
@@ -797,7 +914,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Impact protection layer in fuselage. Confirmed in EFC technical documentation.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 6.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": null
   },
   {
     "id": "GS-01",
@@ -817,7 +937,10 @@ window.BASE_ROWS = [
     "priority_score": 6.4,
     "recommendation": "Monitor",
     "note": "Accelerates P1 from 0–60 mph in 0.25 sec. Zipline proprietary launch infrastructure at each depot.",
-    "supplier_preview": "Robonic Ltd, UAV Factory, JATO Dynamics (custom)"
+    "supplier_preview": "Robonic Ltd, UAV Factory, JATO Dynamics (custom)",
+    "bom_pct": 7.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 3
   },
   {
     "id": "GS-02",
@@ -837,7 +960,10 @@ window.BASE_ROWS = [
     "priority_score": null,
     "recommendation": "Supplier mapping pending",
     "note": "Fast-charge system for quick-swap battery packs. Required at each distribution center.",
-    "supplier_preview": "TBD"
+    "supplier_preview": "TBD",
+    "bom_pct": 18.0,
+    "price_volatility_score": 4,
+    "single_source_exposure": null
   },
   {
     "id": "GS-03",
@@ -857,6 +983,9 @@ window.BASE_ROWS = [
     "priority_score": 6.4,
     "recommendation": "Monitor",
     "note": "C++ and Python on ground systems. Redundant flight hardware also on ground servers per EFC.",
-    "supplier_preview": "Dell Technologies (server hardware), Hewlett Packard Enterprise, Cisco Systems (networking)"
+    "supplier_preview": "Dell Technologies (server hardware), Hewlett Packard Enterprise, Cisco Systems (networking)",
+    "bom_pct": 7.0,
+    "price_volatility_score": 3,
+    "single_source_exposure": 3
   }
-];
+]
